@@ -4,12 +4,18 @@ import { createRoot } from "react-dom/client";
 import App from "./App.tsx";
 import GlobalStyles from "./style/GlobalStyles.ts";
 import { StoreProvider } from "./contexts/store.tsx";
+import SupabaseProvider from "./contexts/SupabaseContext.tsx";
+import ReactQueryProvider from "./contexts/ReactQueryContext.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <StoreProvider>
-      <App />
+      <ReactQueryProvider>
+        <SupabaseProvider>
+          <App />
+          <GlobalStyles />
+        </SupabaseProvider>
+      </ReactQueryProvider>
     </StoreProvider>
-    <GlobalStyles />
   </StrictMode>
 );

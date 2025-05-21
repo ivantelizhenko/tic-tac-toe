@@ -1,19 +1,55 @@
-import { createContext, useContext, useReducer, type ReactNode } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useReducer,
+  type ReactNode,
+} from "react";
 import type { Action, StoreContextValue, StoreState } from "./storeTypes";
 
 const StoreContext = createContext<StoreContextValue | null>(null);
 
 const initialState: StoreState = {
-  test: "",
+  side: null,
+  turn: "X",
+  board: null,
+  isGameOver: { type: null, message: "" },
+  userId: null,
 };
 
 function storeReducer(state: StoreState, action: Action): StoreState {
   switch (action.type) {
-    case "test": {
+    case "side/set": {
       return {
         ...state,
-        test: action.payload,
+        side: action.payload,
       };
+    }
+    case "board/set": {
+      return {
+        ...state,
+        board: action.payload,
+      };
+    }
+    case "tile/set": {
+      const newBoard = state.board!.map((tile) =>
+        tile.id === action.payload
+          ? { type: state.side, id: action.payload }
+          : tile
+      );
+      return {
+        ...state,
+        board: newBoard,
+      };
+    }
+    case "gameOver/set": {
+      return { ...state, isGameOver: action.payload };
+    }
+    case "turn/set": {
+      return { ...state, turn: action.payload };
+    }
+    case "userId/set": {
+      return { ...state, userId: action.payload };
     }
     default:
       throw new Error("Unknown action type");
@@ -25,9 +61,24 @@ function StoreProvider({ children }: { children: ReactNode }) {
 
   const ctx: StoreContextValue = {
     ...appState,
-    functionExample(test) {
-      dispatch({ type: "test", payload: test });
+    setSide: useCallback((side) => {
+      dispatch({ type: "side/set", payload: side });
+    }, []),
+    setBoard: useCallback((board) => {
+      dispatch({ type: "board/set", payload: board });
+    }, []),
+    setTile(id) {
+      dispatch({ type: "tile/set", payload: id });
     },
+    setGameOver: useCallback((gameOverData) => {
+      dispatch({ type: "gameOver/set", payload: gameOverData });
+    }, []),
+    setTurn: (turn) => {
+      dispatch({ type: "turn/set", payload: turn });
+    },
+    setUserId: useCallback((id: string) => {
+      dispatch({ type: "userId/set", payload: id });
+    }, []),
   };
 
   return <StoreContext.Provider value={ctx}>{children}</StoreContext.Provider>;

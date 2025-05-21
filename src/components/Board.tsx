@@ -1,30 +1,58 @@
 import styled from "styled-components";
 import Tile, { type IconType } from "./Tile";
-
-const tiles: { type: IconType; id: string }[] = [
-  { type: null, id: "asnnvhf" },
-  { type: "X", id: "asnn2vhf" },
-  { type: "X", id: "asnn3vhf" },
-  { type: "X", id: "asnnv5hf" },
-  { type: "O", id: "asnn4vhf" },
-  { type: null, id: "asnn6vhf" },
-  { type: null, id: "7asnnvhf" },
-  { type: null, id: "asn8nvhf" },
-  { type: null, id: "asn1nvhf" },
-];
+import { useStore } from "../contexts/store";
+import { createBoard, possibleWin } from "../utils/utils";
+import { useEffect } from "react";
 
 function Board() {
+  const { side, board, isGameOver, setBoard, setTile, setSide, setGameOver } =
+    useStore();
+
+  useEffect(() => {
+    setBoard(createBoard());
+    setSide("X");
+  }, [setBoard, setSide]);
+
+  useEffect(() => {
+    if (board) {
+      const boardNumber = board.map((tile) => tile.type);
+      const positionsForWins = possibleWin.map((set) =>
+        set.map((index) => boardNumber[index])
+      );
+      const isWin = positionsForWins.find((positionForWin) => {
+        const set = Array.from(new Set(positionForWin));
+        return !set.includes(null) && set.length === 1;
+      });
+
+      if (isWin) {
+        const sideWin = isWin[0];
+        setGameOver({ type: "win", message: `${sideWin} win.` });
+      }
+    }
+  }, [board, setGameOver]);
+
+  function handleDoMove({ type, id }: { type: IconType; id: string }) {
+    if (type || isGameOver.type) return;
+    setTile(id);
+
+    // Temporary:
+    const newSide = side === "X" ? "O" : "X";
+    setSide(newSide);
+  }
+
+  if (!board) return <p>Spinner</p>;
+
   return (
     <Wrapper>
-      {tiles.map(({ type, id }) => (
-        <Tile key={id} icon={type} />
+      {board.map(({ type, id }) => (
+        <Tile key={id} icon={type} onClick={() => handleDoMove({ type, id })} />
       ))}
     </Wrapper>
   );
 }
 
 const Wrapper = styled.div`
-  width: 50%;
+  height: 80%;
   aspect-ratio: 1/1;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -32,6 +60,11 @@ const Wrapper = styled.div`
   gap: 16px;
   position: relative;
   z-index: 2;
+
+  @media (max-width: 750px) {
+    width: 80%;
+    height: revert;
+  }
 
   &:after {
     content: "";
