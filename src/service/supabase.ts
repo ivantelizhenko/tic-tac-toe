@@ -1,4 +1,5 @@
 import { supabase } from "../lib/supabase";
+import { isMoreThanFiveMinutesApart } from "../utils/helpers";
 
 export async function getGames() {
   const { data: games, error } = await supabase.from("games").select("*");
@@ -20,9 +21,23 @@ export async function getGames() {
 
     // Якщо немає, то створити нову
     if (games && games.length === 0) {
-      const game = await createGame();
+      const game = await resetGame();
       return game;
     }
+  }
+
+  const isUnactiveByCreatedAt =
+    game.updatedAt === null && isMoreThanFiveMinutesApart(game.createdAt);
+  const isUnactiveByUpdatedAt =
+    game.updatedAt && isMoreThanFiveMinutesApart(game.updatedAt);
+
+  if (
+    (game.userIdX || game.userIdO) &&
+    (isUnactiveByCreatedAt || isUnactiveByUpdatedAt)
+  ) {
+    console.log("restart?");
+    const game = await resetGame();
+    return game;
   }
 
   return game;
@@ -32,10 +47,12 @@ export async function createGame() {
   const gameId = Math.random().toString();
   const now = new Date();
 
-  const { data: game } = await supabase
+  const { data: game, error } = await supabase
     .from("games")
-    .insert([{ id: gameId, createAt: now }])
+    .insert([{ id: gameId, createdAt: now }])
     .select();
+
+  console.log(error);
 
   return game;
 }
