@@ -24,9 +24,7 @@ function useRealtimeGame() {
             turn: SideType;
           };
 
-          if (!side) {
-            queryClient.invalidateQueries({ queryKey: ["game"] });
-          }
+          // queryClient.invalidateQueries({ queryKey: ["game"] });
 
           if (side === turn) {
             setBoard(board);

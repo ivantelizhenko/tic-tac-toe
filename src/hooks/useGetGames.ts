@@ -5,6 +5,8 @@ function useGetGame() {
   return useQuery({
     queryKey: ["game"],
     queryFn: getGames,
+    refetchInterval: 1000,
+    retry: 2,
   });
 }
 

@@ -15,13 +15,13 @@ import GameOverWindow from "./components/GameOverWindow";
 
 function App() {
   const [selectedSide, setSelectedSide] = useState<null | "X" | "O">(null);
+  const [isOpenChooseWindow, setIsOpenChooseWindow] = useState<boolean>(false);
   const onceGetBoard = useRef(true);
 
   const { setUserId, userId, setSide, side, setBoard, setTurn } = useStore();
   const { data: game, isLoading: isLoadingGame } = useGetGame();
   const { createGame } = useCreateGame();
   const { addUserId } = useAddUserId();
-  const [isOpenChooseWindow, setIsOpenChooseWindow] = useState<boolean>(false);
 
   useRealtimeGame();
 
@@ -66,6 +66,7 @@ function App() {
 
   // Встановити id гравця. Чи то з localStorage, якщо там є, чи створити нове
   useEffect(() => {
+    console.log("id");
     const localStorageId = getIdFromLocalStorage();
     const id = Math.random().toString();
     if (localStorageId) {

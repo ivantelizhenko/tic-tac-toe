@@ -1,15 +1,28 @@
 import { supabase } from "../lib/supabase";
 
 export async function getGames() {
-  const { data: game, error } = await supabase
-    .from("games")
-    .select("*")
-    .single();
+  const { data: games, error } = await supabase.from("games").select("*");
+  const game = games?.at(0);
 
-  if (error) {
-    await supabase.from("games").delete().neq("id", "");
-    const game = await createGame();
+  // Якщо ігор взагалі не знайдено
+  if (error || games === null) {
+    const game = await resetGame();
     return game;
+  }
+
+  // Якщо ігор більше, аніж 1
+  if (games && games.length > 1) {
+    // Видалити всі, що є
+    await deleteGame();
+
+    // Перевірити, чи є якісь ігри
+    const { data: games } = await supabase.from("games").select("*");
+
+    // Якщо немає, то створити нову
+    if (games && games.length === 0) {
+      const game = await createGame();
+      return game;
+    }
   }
 
   return game;
@@ -17,7 +30,6 @@ export async function getGames() {
 
 export async function createGame() {
   const gameId = Math.random().toString();
-
   const now = new Date();
 
   const { data: game } = await supabase
@@ -26,6 +38,10 @@ export async function createGame() {
     .select();
 
   return game;
+}
+
+export async function deleteGame() {
+  await supabase.from("games").delete().neq("id", "");
 }
 
 export async function addUserId({
@@ -63,6 +79,8 @@ export async function updateBoard(board: string) {
 }
 
 export async function resetGame() {
-  await supabase.from("games").delete().neq("id", "");
-  await createGame();
+  await deleteGame();
+  const game = await createGame();
+
+  return game;
 }

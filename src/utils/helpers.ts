@@ -12,8 +12,7 @@ export function isMoreThanFiveMinutesApart(lastUpdatedTime: string): boolean {
   const nowInMs = new Date().getTime();
 
   const diffInMilliseconds = Math.abs(lastUpdatedTimeInMs - nowInMs);
-  // const fiveMinutesInMs = 5 * 60 * 1000;
-  const fiveMinutesInMs = 5000;
+  const fiveMinutesInMs = 5 * 60 * 1000;
 
   return diffInMilliseconds > fiveMinutesInMs;
 }
