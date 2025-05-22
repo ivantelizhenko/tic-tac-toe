@@ -6,3 +6,14 @@ export function getIdFromLocalStorage() {
 
   return id;
 }
+
+export function isMoreThanFiveMinutesApart(lastUpdatedTime: string): boolean {
+  const lastUpdatedTimeInMs = new Date(lastUpdatedTime).getTime();
+  const nowInMs = new Date().getTime();
+
+  const diffInMilliseconds = Math.abs(lastUpdatedTimeInMs - nowInMs);
+  // const fiveMinutesInMs = 5 * 60 * 1000;
+  const fiveMinutesInMs = 5000;
+
+  return diffInMilliseconds > fiveMinutesInMs;
+}

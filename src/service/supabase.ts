@@ -52,9 +52,11 @@ export async function updateBoard(board: string) {
   const { data: game } = await supabase.from("games").select("*").single();
   const nextTurn = game.turn === "X" ? "O" : "X";
 
+  const now = new Date();
+
   await supabase
     .from("games")
-    .update({ board, turn: nextTurn })
+    .update({ board, turn: nextTurn, updatedAt: now })
     .eq("id", game.id);
 }
 
