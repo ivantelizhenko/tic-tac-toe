@@ -5,7 +5,7 @@ import type { SideType, TileType } from "../contexts/storeTypes";
 import { useQueryClient } from "@tanstack/react-query";
 
 function useRealtimeGame() {
-  const { setBoard, setTurn, side } = useStore();
+  const { setBoard, setTurn, side, reset } = useStore();
   const queryClient = useQueryClient();
 
   useEffect(() => {
@@ -19,12 +19,30 @@ function useRealtimeGame() {
           table: "games",
         },
         (payload) => {
-          const { board, turn } = payload.new as {
+          const { board, turn, updatedAt, userIdX, userIdO } = payload.new as {
             board: TileType[];
             turn: SideType;
+            updatedAt: string | null;
+            userIdX: string | null;
+            userIdO: string | null;
           };
 
-          // queryClient.invalidateQueries({ queryKey: ["game"] });
+          // Це оновлює вікно вибору сторони
+          if ((userIdX && !userIdO) || (!userIdX && userIdO)) {
+            queryClient.refetchQueries({ queryKey: ["game"] });
+          }
+
+          const isNotDefaultBoard =
+            board &&
+            !board
+              .map((tile) => tile.type)
+              .find((type) => typeof type === "string");
+
+          // Це оновлює гру, коли перестворилася нова
+          if (isNotDefaultBoard && !updatedAt && !userIdX && !userIdO) {
+            reset();
+            queryClient.refetchQueries({ queryKey: ["game"] });
+          }
 
           if (side === turn) {
             setBoard(board);
@@ -37,7 +55,7 @@ function useRealtimeGame() {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [setBoard, setTurn, side, queryClient]);
+  }, [setBoard, setTurn, side, queryClient, reset]);
 }
 
 export default useRealtimeGame;

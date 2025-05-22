@@ -27,15 +27,16 @@ export async function getGames() {
   }
 
   const isUnactiveByCreatedAt =
-    game.updatedAt === null && isMoreThanFiveMinutesApart(game.createdAt);
+    game.updatedAt === null &&
+    isMoreThanFiveMinutesApart({ time: game.createdAt, type: "created" });
   const isUnactiveByUpdatedAt =
-    game.updatedAt && isMoreThanFiveMinutesApart(game.updatedAt);
+    !!game.updatedAt &&
+    isMoreThanFiveMinutesApart({ time: game.updatedAt, type: "updated" });
 
   if (
     (game.userIdX || game.userIdO) &&
     (isUnactiveByCreatedAt || isUnactiveByUpdatedAt)
   ) {
-    console.log("restart?");
     const game = await resetGame();
     return game;
   }
@@ -47,12 +48,10 @@ export async function createGame() {
   const gameId = Math.random().toString();
   const now = new Date();
 
-  const { data: game, error } = await supabase
+  const { data: game } = await supabase
     .from("games")
     .insert([{ id: gameId, createdAt: now }])
     .select();
-
-  console.log(error);
 
   return game;
 }

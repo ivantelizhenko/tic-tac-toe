@@ -7,12 +7,18 @@ export function getIdFromLocalStorage() {
   return id;
 }
 
-export function isMoreThanFiveMinutesApart(lastUpdatedTime: string): boolean {
-  const lastUpdatedTimeInMs = new Date(lastUpdatedTime).getTime();
+export function isMoreThanFiveMinutesApart({
+  time,
+  type,
+}: {
+  time: string;
+  type: "created" | "updated";
+}): boolean {
+  const lastUpdatedTimeInMs = new Date(time).getTime();
   const nowInMs = new Date().getTime();
 
   const diffInMilliseconds = Math.abs(lastUpdatedTimeInMs - nowInMs);
-  const fiveMinutesInMs = 5 * 60 * 1000;
+  const ms = { created: 3 * 60 * 1000, updated: 10 * 1000 };
 
-  return diffInMilliseconds > fiveMinutesInMs;
+  return diffInMilliseconds > ms[type];
 }

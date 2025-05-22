@@ -66,7 +66,6 @@ function App() {
 
   // Встановити id гравця. Чи то з localStorage, якщо там є, чи створити нове
   useEffect(() => {
-    console.log("id");
     const localStorageId = getIdFromLocalStorage();
     const id = Math.random().toString();
     if (localStorageId) {
