@@ -2,15 +2,13 @@ import styled from "styled-components";
 import X from "./X";
 import O from "./O";
 
+export type IconType = "X" | "O" | null;
 type TileProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   icon: IconType;
 };
-export type IconType = "X" | "O" | null;
-
-const items = { X, O };
 
 function Tile({ icon, ...delegated }: TileProps) {
-  const Icon = items[icon!];
+  const Icon = { X, O }[icon!];
   return <Wrapper {...delegated}>{icon && <Icon />}</Wrapper>;
 }
 

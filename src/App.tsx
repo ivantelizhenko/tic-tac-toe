@@ -1,35 +1,102 @@
+import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
-import Board from "./components/Board";
-import { useEffect } from "react";
+
 import { getIdFromLocalStorage, setIdToLocalStorage } from "./utils/helpers";
 import { useStore } from "./contexts/store";
 
-function App() {
-  const { setUserId } = useStore();
+import useGetGame from "./hooks/useGetGames";
+import useCreateGame from "./hooks/useCreateGame";
+import useAddUserId from "./hooks/useAddUserId";
+import useRealtimeGame from "./hooks/useRealtimeGame";
 
+import ChooseSide from "./components/ChooseSide";
+import Board from "./components/Board";
+
+function App() {
+  const [selectedSide, setSelectedSide] = useState<null | "X" | "O">(null);
+  const onceGetBoard = useRef(true);
+
+  const { setUserId, userId, setSide, side, setBoard, setTurn } = useStore();
+  const { data: game, isLoading: isLoadingGame } = useGetGame();
+  const { createGame } = useCreateGame();
+  const { addUserId } = useAddUserId();
+
+  useRealtimeGame();
+
+  // При першому завантажені сторінки або оновленні сторінки отримує гру і крок з сервера
+  useEffect(() => {
+    if (onceGetBoard) {
+      if (game) {
+        onceGetBoard.current = false;
+        const board = JSON.parse(game.board);
+        setBoard(board);
+        setTurn(game.turn);
+      }
+    }
+  }, [game, setBoard, setTurn]);
+
+  // Якщо є можливість обрати бік, то після додає гравця до гри
+  useEffect(() => {
+    if (selectedSide !== null && userId) {
+      setSide(selectedSide);
+      addUserId({ side: selectedSide, userId });
+    }
+  }, [selectedSide, setSide, addUserId, userId]);
+
+  // Якщо є гра і ти вже був у цій грі до цього, то тебе поверне в гру.
   useEffect(() => {
     const localStorageId = getIdFromLocalStorage();
+    if (game && localStorageId) {
+      if (game.userIdX === localStorageId) {
+        setSide("X");
+      } else if (game.userIdO === localStorageId) {
+        setSide("O");
+      }
+    }
+  }, [setSide, game]);
 
+  // Встановити id гравця. Чи то з localStorage, якщо там є, чи створити нове
+  useEffect(() => {
+    const localStorageId = getIdFromLocalStorage();
+    const id = Math.random().toString();
     if (localStorageId) {
       setUserId(localStorageId);
     } else {
-      const id = Math.random().toString();
       setUserId(id);
       setIdToLocalStorage(id);
     }
   }, [setUserId]);
 
+  // Якщо в db немає гри, то створити
+  useEffect(() => {
+    if (!isLoadingGame && userId && !game) {
+      createGame();
+    }
+  }, [game, isLoadingGame, userId, createGame]);
+
+  if (isLoadingGame) return <p>Spinner</p>;
+
   return (
     <Wrapper>
       <Board />
+      <ChooseSide
+        isOpen={
+          selectedSide === null && !side && (!game.userIdO || !game.userIdX)
+        }
+        handleChoose={setSelectedSide}
+      />
     </Wrapper>
   );
 }
 
 const Wrapper = styled.main`
   --color-main: #18bdac;
+  --color-main-darker-lite: #16b1a4;
+  --color-main-darker: #0ca192;
+  --color-main-lighter: #50d3c4;
   --color-x: #545453;
   --color-o: #f2ecd2;
+  --color-modal-bg: #e0f3f1;
 
   height: 100%;
   width: 100%;

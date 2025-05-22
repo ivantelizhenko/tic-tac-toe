@@ -11,9 +11,9 @@ const StoreContext = createContext<StoreContextValue | null>(null);
 
 const initialState: StoreState = {
   side: null,
-  turn: "X",
+  turn: null,
   board: null,
-  isGameOver: { type: null, message: "" },
+  isGameOver: { message: null },
   userId: null,
 };
 
@@ -43,7 +43,7 @@ function storeReducer(state: StoreState, action: Action): StoreState {
       };
     }
     case "gameOver/set": {
-      return { ...state, isGameOver: action.payload };
+      return { ...state, isGameOver: { message: action.payload } };
     }
     case "turn/set": {
       return { ...state, turn: action.payload };
@@ -70,12 +70,12 @@ function StoreProvider({ children }: { children: ReactNode }) {
     setTile(id) {
       dispatch({ type: "tile/set", payload: id });
     },
-    setGameOver: useCallback((gameOverData) => {
-      dispatch({ type: "gameOver/set", payload: gameOverData });
+    setGameOver: useCallback((message) => {
+      dispatch({ type: "gameOver/set", payload: message });
     }, []),
-    setTurn: (turn) => {
+    setTurn: useCallback((turn) => {
       dispatch({ type: "turn/set", payload: turn });
-    },
+    }, []),
     setUserId: useCallback((id: string) => {
       dispatch({ type: "userId/set", payload: id });
     }, []),

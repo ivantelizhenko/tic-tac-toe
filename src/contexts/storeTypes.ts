@@ -4,9 +4,9 @@ export type GameOverType = "win" | "lose" | "draw";
 
 export type StoreState = {
   side: SideType | null;
-  turn: SideType;
+  turn: SideType | null;
   board: TileType[] | null;
-  isGameOver: { type: GameOverType | null; message: string };
+  isGameOver: { message: string | null };
   userId: string | null;
 };
 
@@ -14,7 +14,7 @@ export type StoreContextValue = StoreState & {
   setSide: (side: SideType) => void;
   setBoard: (board: TileType[]) => void;
   setTile: (id: string) => void;
-  setGameOver: (gameOverData: { type: GameOverType; message: string }) => void;
+  setGameOver: (message: string) => void;
   setTurn: (turn: SideType) => void;
   setUserId: (userId: string) => void;
 };
@@ -34,7 +34,7 @@ type SetTileType = {
 };
 type SetGameOverType = {
   type: "gameOver/set";
-  payload: { type: GameOverType; message: string };
+  payload: string;
 };
 type SetTurnType = {
   type: "turn/set";

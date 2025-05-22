@@ -1,18 +1,18 @@
-import styled from "styled-components";
-import Tile, { type IconType } from "./Tile";
-import { useStore } from "../contexts/store";
-import { createBoard, possibleWin } from "../utils/utils";
 import { useEffect } from "react";
+import styled from "styled-components";
+
+import { possibleWin } from "../utils/utils";
+import { useStore } from "../contexts/store";
+
+import useUpdateBoard from "../hooks/useUpdateBoard";
+import Tile, { type IconType } from "./Tile";
 
 function Board() {
-  const { side, board, isGameOver, setBoard, setTile, setSide, setGameOver } =
+  const { turn, board, isGameOver, setTile, setGameOver, side, setTurn } =
     useStore();
+  const { updateBoard } = useUpdateBoard();
 
-  useEffect(() => {
-    setBoard(createBoard());
-    setSide("X");
-  }, [setBoard, setSide]);
-
+  // Перевірка, чи не завершити гру
   useEffect(() => {
     if (board) {
       const boardNumber = board.map((tile) => tile.type);
@@ -24,20 +24,29 @@ function Board() {
         return !set.includes(null) && set.length === 1;
       });
 
+      const isDraw = !board.map((tile) => tile.type).includes(null);
+
       if (isWin) {
         const sideWin = isWin[0];
-        setGameOver({ type: "win", message: `${sideWin} win.` });
+        setGameOver(`${sideWin} win`);
+      }
+
+      if (isDraw) {
+        setGameOver("Draw");
       }
     }
-  }, [board, setGameOver]);
+  }, [board, setGameOver, updateBoard]);
 
+  // Зробити крок.
   function handleDoMove({ type, id }: { type: IconType; id: string }) {
-    if (type || isGameOver.type) return;
-    setTile(id);
+    if (type || isGameOver.message || !side) return;
 
-    // Temporary:
-    const newSide = side === "X" ? "O" : "X";
-    setSide(newSide);
+    if (side === turn) {
+      const newTurn = turn === "X" ? "O" : "X";
+      setTile(id);
+      setTurn(newTurn);
+      updateBoard();
+    }
   }
 
   if (!board) return <p>Spinner</p>;
@@ -74,7 +83,7 @@ const Wrapper = styled.div`
     position: absolute;
     top: 0;
     left: 0;
-    background-color: #0ca192;
+    background-color: var(--color-main-darker);
   }
 `;
 
