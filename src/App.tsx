@@ -11,6 +11,7 @@ import useRealtimeGame from "./hooks/useRealtimeGame";
 
 import ChooseSide from "./components/ChooseSide";
 import Board from "./components/Board";
+import GameOverWindow from "./components/GameOverWindow";
 
 function App() {
   const [selectedSide, setSelectedSide] = useState<null | "X" | "O">(null);
@@ -20,40 +21,48 @@ function App() {
   const { data: game, isLoading: isLoadingGame } = useGetGame();
   const { createGame } = useCreateGame();
   const { addUserId } = useAddUserId();
+  const [isOpenChooseWindow, setIsOpenChooseWindow] = useState<boolean>(false);
 
   useRealtimeGame();
 
-  // При першому завантажені сторінки або оновленні сторінки отримує гру і крок з сервера
   useEffect(() => {
+    if (game) {
+      setIsOpenChooseWindow(
+        selectedSide === null && !side && (!game.userIdO || !game.userIdX)
+      );
+    }
+  }, [selectedSide, side, game]);
+
+  useEffect(() => {
+    const localStorageId = getIdFromLocalStorage();
     if (onceGetBoard) {
-      if (game) {
+      // При першому завантажені сторінки або оновленні сторінки отримує гру і крок з сервера
+      if (game && game.board) {
         onceGetBoard.current = false;
         const board = JSON.parse(game.board);
         setBoard(board);
         setTurn(game.turn);
       }
+
+      // Якщо є гра і ти вже був у цій грі до цього, то тебе поверне в гру.
+      if (game && localStorageId) {
+        if (game.userIdX === localStorageId) {
+          setSide("X");
+        } else if (game.userIdO === localStorageId) {
+          setSide("O");
+        }
+      }
     }
-  }, [game, setBoard, setTurn]);
+  }, [game, setBoard, setTurn, setSide]);
 
   // Якщо є можливість обрати бік, то після додає гравця до гри
   useEffect(() => {
     if (selectedSide !== null && userId) {
       setSide(selectedSide);
+      setSelectedSide(null);
       addUserId({ side: selectedSide, userId });
     }
   }, [selectedSide, setSide, addUserId, userId]);
-
-  // Якщо є гра і ти вже був у цій грі до цього, то тебе поверне в гру.
-  useEffect(() => {
-    const localStorageId = getIdFromLocalStorage();
-    if (game && localStorageId) {
-      if (game.userIdX === localStorageId) {
-        setSide("X");
-      } else if (game.userIdO === localStorageId) {
-        setSide("O");
-      }
-    }
-  }, [setSide, game]);
 
   // Встановити id гравця. Чи то з localStorage, якщо там є, чи створити нове
   useEffect(() => {
@@ -74,17 +83,14 @@ function App() {
     }
   }, [game, isLoadingGame, userId, createGame]);
 
+  // TODO: add spinner
   if (isLoadingGame) return <p>Spinner</p>;
 
   return (
     <Wrapper>
       <Board />
-      <ChooseSide
-        isOpen={
-          selectedSide === null && !side && (!game.userIdO || !game.userIdX)
-        }
-        handleChoose={setSelectedSide}
-      />
+      <ChooseSide isOpen={isOpenChooseWindow} handleChoose={setSelectedSide} />
+      <GameOverWindow />
     </Wrapper>
   );
 }

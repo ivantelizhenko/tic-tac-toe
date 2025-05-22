@@ -2,10 +2,11 @@ import { useEffect } from "react";
 import { supabase } from "../lib/supabase";
 import { useStore } from "../contexts/store";
 import type { SideType, TileType } from "../contexts/storeTypes";
+import { useQueryClient } from "@tanstack/react-query";
 
-// function useRealtimeGameUpdates(getNewData: (data: any) => void) {
 function useRealtimeGame() {
   const { setBoard, setTurn, side } = useStore();
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     const channel = supabase
@@ -23,8 +24,11 @@ function useRealtimeGame() {
             turn: SideType;
           };
 
+          if (!side) {
+            queryClient.invalidateQueries({ queryKey: ["game"] });
+          }
+
           if (side === turn) {
-            console.log("i wanna change");
             setBoard(board);
             setTurn(turn);
           }
@@ -35,7 +39,7 @@ function useRealtimeGame() {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [setBoard, setTurn, side]);
+  }, [setBoard, setTurn, side, queryClient]);
 }
 
 export default useRealtimeGame;

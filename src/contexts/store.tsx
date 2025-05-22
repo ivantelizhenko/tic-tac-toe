@@ -45,6 +45,9 @@ function storeReducer(state: StoreState, action: Action): StoreState {
     case "gameOver/set": {
       return { ...state, isGameOver: { message: action.payload } };
     }
+    case "game/reset": {
+      return { ...state, isGameOver: { message: null }, side: null };
+    }
     case "turn/set": {
       return { ...state, turn: action.payload };
     }
@@ -73,6 +76,9 @@ function StoreProvider({ children }: { children: ReactNode }) {
     setGameOver: useCallback((message) => {
       dispatch({ type: "gameOver/set", payload: message });
     }, []),
+    reset: () => {
+      dispatch({ type: "game/reset" });
+    },
     setTurn: useCallback((turn) => {
       dispatch({ type: "turn/set", payload: turn });
     }, []),

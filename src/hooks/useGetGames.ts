@@ -3,7 +3,7 @@ import { getGames } from "../service/supabase";
 
 function useGetGame() {
   return useQuery({
-    queryKey: ["games"],
+    queryKey: ["game"],
     queryFn: getGames,
   });
 }

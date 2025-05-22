@@ -57,3 +57,8 @@ export async function updateBoard(board: string) {
     .update({ board, turn: nextTurn })
     .eq("id", game.id);
 }
+
+export async function resetGame() {
+  await supabase.from("games").delete().neq("id", "");
+  await createGame();
+}
