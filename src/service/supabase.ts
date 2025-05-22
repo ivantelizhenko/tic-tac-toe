@@ -18,9 +18,11 @@ export async function getGames() {
 export async function createGame() {
   const gameId = Math.random().toString();
 
+  const now = new Date();
+
   const { data: game } = await supabase
     .from("games")
-    .insert([{ id: gameId }])
+    .insert([{ id: gameId, createAt: now }])
     .select();
 
   return game;
