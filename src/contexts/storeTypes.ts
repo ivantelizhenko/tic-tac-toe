@@ -8,6 +8,7 @@ export type StoreState = {
   board: TileType[] | null;
   isGameOver: { message: string | null };
   userId: string | null;
+  gameId: string | null;
 };
 
 export type StoreContextValue = StoreState & {
@@ -18,6 +19,7 @@ export type StoreContextValue = StoreState & {
   reset: () => void;
   setTurn: (turn: SideType) => void;
   setUserId: (userId: string) => void;
+  setGameId: (gameId: string) => void;
 };
 
 type SetSideType = {
@@ -48,6 +50,10 @@ type SetUserIdType = {
   type: "userId/set";
   payload: string;
 };
+type SetGameIdType = {
+  type: "gameId/set";
+  payload: string;
+};
 
 export type Action =
   | SetSideType
@@ -56,4 +62,5 @@ export type Action =
   | SetGameOverType
   | GameResetType
   | SetTurnType
-  | SetUserIdType;
+  | SetUserIdType
+  | SetGameIdType;

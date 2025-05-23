@@ -20,7 +20,8 @@ const rotate = keyframes`
 
 const Wrapper = styled.div`
   width: 10%;
-  animation: ${rotate} infinite 0.5s;
+  place-self: center;
+  animation: ${rotate} infinite 0.5s linear;
 `;
 
 export default Spinner;

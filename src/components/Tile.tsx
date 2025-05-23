@@ -20,7 +20,7 @@ const Wrapper = styled.button`
   font-size: 8rem;
   border: none;
   cursor: default;
-  background-color: var(--color-main);
+  background-color: var(--color-primary);
   padding: 12px;
 `;
 

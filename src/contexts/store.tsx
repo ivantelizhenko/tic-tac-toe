@@ -20,6 +20,7 @@ const initialState: StoreState = {
   board: null,
   isGameOver: { message: null },
   userId: null,
+  gameId: null,
 };
 
 function storeReducer(state: StoreState, action: Action): StoreState {
@@ -59,6 +60,9 @@ function storeReducer(state: StoreState, action: Action): StoreState {
     case "userId/set": {
       return { ...state, userId: action.payload };
     }
+    case "gameId/set": {
+      return { ...state, gameId: action.payload };
+    }
     default:
       throw new Error("Unknown action type");
   }
@@ -89,6 +93,9 @@ function StoreProvider({ children }: { children: ReactNode }) {
     }, []),
     setUserId: useCallback((id: string) => {
       dispatch({ type: "userId/set", payload: id });
+    }, []),
+    setGameId: useCallback((id: string) => {
+      dispatch({ type: "gameId/set", payload: id });
     }, []),
   };
 

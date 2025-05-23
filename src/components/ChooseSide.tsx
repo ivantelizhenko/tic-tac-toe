@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import X from "./X";
 import O from "./O";
-import useGetGame from "../hooks/useGetGames";
+import useGetGame from "../hooks/useGetGame";
 import ModalWindow from "./ModalWindow";
 
 function ChooseSide({
@@ -46,19 +46,19 @@ const Block = styled.button`
   border-radius: 12px;
   padding: 24px;
   flex: 1;
-  background-color: var(--color-main);
+  background-color: var(--color-primary);
   border: none;
 
   transition: background-color 0.5s;
 
   &:hover {
     transition: background-color 0.2s;
-    background-color: var(--color-main-darker-lite);
+    background-color: var(--color-primary-hover);
   }
 
   &:disabled {
     opacity: 0.4;
-    background-color: #ccc;
+    background-color: var(--color-disabled);
   }
 `;
 

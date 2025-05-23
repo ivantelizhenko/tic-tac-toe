@@ -2,8 +2,9 @@ import styled from "styled-components";
 import { useStore } from "../contexts/store";
 import { createBoard } from "../utils/utils";
 import useResetGame from "../hooks/useResetGame";
-import useGetGame from "../hooks/useGetGames";
+import useGetGame from "../hooks/useGetGame";
 import ModalWindow from "./ModalWindow";
+import { Button } from "./Button";
 
 function GameOverWindow() {
   const { isGameOver, reset, setBoard, side } = useStore();
@@ -24,9 +25,9 @@ function GameOverWindow() {
       <Wrapper>
         <Message>{isGameOver.message}</Message>
         {side && side !== "spectate" && (
-          <ButtonReset onClick={handleReset} disabled={!side}>
+          <GameOverButton onClick={handleReset} disabled={!side}>
             Reset
-          </ButtonReset>
+          </GameOverButton>
         )}
       </Wrapper>
     </ModalWindow>
@@ -35,8 +36,8 @@ function GameOverWindow() {
 
 const Wrapper = styled.div`
   width: 100%;
-  background-color: var(--color-modal-bg);
-  color: var(--color-x);
+  background-color: var(--color-surface);
+  color: var(--color-gray);
   padding: 32px;
   text-align: center;
   display: grid;
@@ -50,30 +51,13 @@ const Message = styled.p`
   letter-spacing: 2px;
 `;
 
-const ButtonReset = styled.button`
-  background-color: var(--color-main);
-  color: var(--color-modal-bg);
-  font-weight: bold;
-  padding: 0.75rem 2rem;
-  font-size: 1.5rem;
-  border-radius: 6px;
+const GameOverButton = styled(Button)`
   width: 100%;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-
-  background-color: var(--color-main);
-  border: none;
-
-  transition: background-color 0.5s;
+  background-color: var(--color-primary);
+  color: var(--color-surface);
 
   &:hover {
-    transition: background-color 0.2s;
-    background-color: var(--color-main-darker-lite);
-  }
-
-  &:disabled {
-    opacity: 0.4;
-    background-color: #ccc;
+    background-color: var(--color-primary-hover);
   }
 `;
 

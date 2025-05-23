@@ -19,7 +19,7 @@ function O() {
 const Svg = styled.svg`
   width: 100%;
   height: 100%;
-  stroke: var(--color-o);
+  stroke: var(--color-white);
 `;
 
 export default O;
