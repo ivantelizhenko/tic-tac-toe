@@ -49,11 +49,9 @@ function Board() {
     }
   }
 
-  if (!board) return <p>Spinner</p>;
-
   return (
     <Wrapper>
-      {board.map(({ type, id }) => (
+      {board?.map(({ type, id }) => (
         <Tile key={id} icon={type} onClick={() => handleDoMove({ type, id })} />
       ))}
     </Wrapper>

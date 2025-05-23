@@ -12,6 +12,7 @@ import useRealtimeGame from "./hooks/useRealtimeGame";
 import ChooseSide from "./components/ChooseSide";
 import Board from "./components/Board";
 import GameOverWindow from "./components/GameOverWindow";
+import Spinner from "./components/Spinner";
 
 function App() {
   const [selectedSide, setSelectedSide] = useState<null | "X" | "O">(null);
@@ -83,14 +84,20 @@ function App() {
     }
   }, [game, isLoadingGame, userId, createGame]);
 
-  // TODO: add spinner
-  if (isLoadingGame) return <p>Spinner</p>;
-
   return (
     <Wrapper>
-      <Board />
-      <ChooseSide isOpen={isOpenChooseWindow} handleChoose={setSelectedSide} />
-      <GameOverWindow />
+      {isLoadingGame ? (
+        <Spinner />
+      ) : (
+        <>
+          <Board />
+          <ChooseSide
+            isOpen={isOpenChooseWindow}
+            handleChoose={setSelectedSide}
+          />
+          <GameOverWindow />
+        </>
+      )}
     </Wrapper>
   );
 }
