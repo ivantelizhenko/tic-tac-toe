@@ -12,7 +12,7 @@ import X from "./X";
 function Board() {
   const { turn, board, isGameOver, setTile, setGameOver, side, setTurn } =
     useStore();
-  const { updateBoard, isPending } = useUpdateBoard();
+  const { updateBoard } = useUpdateBoard();
 
   // Перевірка, чи не завершити гру
   useEffect(() => {
@@ -54,7 +54,6 @@ function Board() {
       {board?.map(({ type, id }) => (
         <Tile key={id} icon={type} onClick={() => handleDoMove({ type, id })} />
       ))}
-      {isPending && <Pending>Pending...</Pending>}
       {turn && <Turn $isO={turn === "O"}>{turn === "O" ? <O /> : <X />}</Turn>}
     </Wrapper>
   );
@@ -65,14 +64,12 @@ const Turn = styled.p<{ $isO: boolean }>`
   left: 0;
   top: -10%;
   color: ${({ $isO }) => ($isO ? "var(--color-o)" : "var(--color-x)")};
-  width: 20px;
-`;
+  width: 40px;
 
-const Pending = styled.p`
-  position: absolute;
-  right: 0;
-  top: -10%;
-  color: var(--color-o);
+  @media (max-width: 750px) {
+    top: -20%;
+    width: 30px;
+  }
 `;
 
 const Wrapper = styled.div`
@@ -81,7 +78,7 @@ const Wrapper = styled.div`
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(3, 1fr);
-  gap: 16px;
+  gap: clamp(0.5rem, 11.3vw - 4.5rem, 1rem);
   position: relative;
   z-index: 2;
 

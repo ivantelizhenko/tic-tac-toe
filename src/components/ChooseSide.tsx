@@ -36,6 +36,10 @@ const Wrapper = styled.div`
   align-items: center;
   padding: 36px 48px;
   background-color: var(--color-main-lighter);
+
+  @media (max-width: 750px) {
+    padding: 24px 24px;
+  }
 `;
 
 const Block = styled.button`
