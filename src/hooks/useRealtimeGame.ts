@@ -5,7 +5,7 @@ import type { SideType, TileType } from "../contexts/storeTypes";
 import { useQueryClient } from "@tanstack/react-query";
 
 function useRealtimeGame() {
-  const { setBoard, setTurn, side, reset } = useStore();
+  const { setBoard, setTurn, setSide, side, reset } = useStore();
   const queryClient = useQueryClient();
 
   useEffect(() => {
@@ -27,19 +27,26 @@ function useRealtimeGame() {
             userIdO: string | null;
           };
 
+          // Оновлення дошки для спостерігача
+          if (side === "spectate") {
+            setBoard(board);
+          }
+
+          // Якщо є два гравця і заходить хтось інший, то він додається як спостерігач
+          if (!side && userIdX && userIdO) {
+            setSide("spectate");
+          }
+
           // Це оновлює вікно вибору сторони
           if ((userIdX && !userIdO) || (!userIdX && userIdO)) {
             queryClient.refetchQueries({ queryKey: ["game"] });
           }
 
-          const isNotDefaultBoard =
-            board &&
-            !board
-              .map((tile) => tile.type)
-              .find((type) => typeof type === "string");
+          const isEmptyBoard =
+            board && board.every((tile) => tile.type === null);
 
           // Це оновлює гру, коли перестворилася нова
-          if (isNotDefaultBoard && !updatedAt && !userIdX && !userIdO) {
+          if (isEmptyBoard && !updatedAt && !userIdX && !userIdO) {
             reset();
             queryClient.refetchQueries({ queryKey: ["game"] });
           }
@@ -55,7 +62,7 @@ function useRealtimeGame() {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [setBoard, setTurn, side, queryClient, reset]);
+  }, [setBoard, setTurn, side, queryClient, reset, setSide]);
 }
 
 export default useRealtimeGame;

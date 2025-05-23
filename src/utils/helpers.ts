@@ -18,7 +18,7 @@ export function isMoreThanFiveMinutesApart({
   const nowInMs = new Date().getTime();
 
   const diffInMilliseconds = Math.abs(lastUpdatedTimeInMs - nowInMs);
-  const ms = { created: 3 * 60 * 1000, updated: 10 * 1000 };
+  const ms = { created: 3 * 60 * 1000, updated: 15 * 1000 };
 
   return diffInMilliseconds > ms[type];
 }

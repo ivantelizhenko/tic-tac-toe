@@ -19,7 +19,7 @@ function App() {
   const [isOpenChooseWindow, setIsOpenChooseWindow] = useState<boolean>(false);
   const onceGetBoard = useRef(true);
 
-  const { setUserId, userId, setSide, side, setBoard, setTurn } = useStore();
+  const { setUserId, userId, side, setSide, setBoard, setTurn } = useStore();
   const { data: game, isLoading: isLoadingGame } = useGetGame();
   const { createGame } = useCreateGame();
   const { addUserId } = useAddUserId();
@@ -32,7 +32,7 @@ function App() {
         selectedSide === null && !side && (!game.userIdO || !game.userIdX)
       );
     }
-  }, [selectedSide, side, game]);
+  }, [selectedSide, game, side]);
 
   useEffect(() => {
     const localStorageId = getIdFromLocalStorage();

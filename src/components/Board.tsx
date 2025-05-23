@@ -6,11 +6,13 @@ import { useStore } from "../contexts/store";
 
 import useUpdateBoard from "../hooks/useUpdateBoard";
 import Tile, { type IconType } from "./Tile";
+import O from "./O";
+import X from "./X";
 
 function Board() {
   const { turn, board, isGameOver, setTile, setGameOver, side, setTurn } =
     useStore();
-  const { updateBoard } = useUpdateBoard();
+  const { updateBoard, isPending } = useUpdateBoard();
 
   // Перевірка, чи не завершити гру
   useEffect(() => {
@@ -29,9 +31,7 @@ function Board() {
       if (isWin) {
         const sideWin = isWin[0];
         setGameOver(`${sideWin} win`);
-      }
-
-      if (isDraw) {
+      } else if (isDraw) {
         setGameOver("Draw");
       }
     }
@@ -39,7 +39,7 @@ function Board() {
 
   // Зробити крок.
   function handleDoMove({ type, id }: { type: IconType; id: string }) {
-    if (type || isGameOver.message || !side) return;
+    if (type || isGameOver.message || !side || side === "spectate") return;
 
     if (side === turn) {
       const newTurn = turn === "X" ? "O" : "X";
@@ -54,9 +54,26 @@ function Board() {
       {board?.map(({ type, id }) => (
         <Tile key={id} icon={type} onClick={() => handleDoMove({ type, id })} />
       ))}
+      {isPending && <Pending>Pending...</Pending>}
+      {turn && <Turn $isO={turn === "O"}>{turn === "O" ? <O /> : <X />}</Turn>}
     </Wrapper>
   );
 }
+
+const Turn = styled.p<{ $isO: boolean }>`
+  position: absolute;
+  left: 0;
+  top: -10%;
+  color: ${({ $isO }) => ($isO ? "var(--color-o)" : "var(--color-x)")};
+  width: 20px;
+`;
+
+const Pending = styled.p`
+  position: absolute;
+  right: 0;
+  top: -10%;
+  color: var(--color-o);
+`;
 
 const Wrapper = styled.div`
   height: 80%;

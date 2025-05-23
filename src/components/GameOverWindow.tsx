@@ -12,22 +12,22 @@ function GameOverWindow() {
   const { data: game } = useGetGame();
 
   function handleReset() {
-    if (side) {
-      if (game && game.userIdX && game.userIdO) {
-        resetGame();
-      }
-      setBoard(createBoard());
-      reset();
+    if (game && game.userIdX && game.userIdO) {
+      resetGame();
     }
+    setBoard(createBoard());
+    reset();
   }
 
   return (
     <ModalWindow isOpen={!!isGameOver.message}>
       <Wrapper>
         <Message>{isGameOver.message}</Message>
-        <ButtonReset onClick={handleReset} disabled={!side}>
-          Reset
-        </ButtonReset>
+        {side && side !== "spectate" && (
+          <ButtonReset onClick={handleReset} disabled={!side}>
+            Reset
+          </ButtonReset>
+        )}
       </Wrapper>
     </ModalWindow>
   );

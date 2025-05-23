@@ -5,7 +5,12 @@ import {
   useReducer,
   type ReactNode,
 } from "react";
-import type { Action, StoreContextValue, StoreState } from "./storeTypes";
+import type {
+  Action,
+  SideType,
+  StoreContextValue,
+  StoreState,
+} from "./storeTypes";
 
 const StoreContext = createContext<StoreContextValue | null>(null);
 
@@ -34,7 +39,7 @@ function storeReducer(state: StoreState, action: Action): StoreState {
     case "tile/set": {
       const newBoard = state.board!.map((tile) =>
         tile.id === action.payload
-          ? { type: state.side, id: action.payload }
+          ? { type: state.side as SideType, id: action.payload }
           : tile
       );
       return {

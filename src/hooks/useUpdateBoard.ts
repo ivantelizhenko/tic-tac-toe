@@ -5,11 +5,11 @@ import { useStore } from "../contexts/store";
 function useUpdateBoard() {
   const { board } = useStore();
 
-  const { mutateAsync: updateBoard } = useMutation({
+  const { mutateAsync: updateBoard, isPending } = useMutation({
     mutationFn: () => updateBoardAPI(JSON.stringify(board)),
   });
 
-  return { updateBoard };
+  return { updateBoard, isPending };
 }
 
 export default useUpdateBoard;
