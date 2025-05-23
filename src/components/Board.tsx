@@ -37,7 +37,7 @@ function Board() {
     }
   }, [board, setGameOver, updateBoard]);
 
-  // Зробити крок.
+  // Зробити крок
   function handleDoMove({ type, id }: { type: IconType; id: string }) {
     if (type || isGameOver.message || !side || side === "spectate") return;
 
