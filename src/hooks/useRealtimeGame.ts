@@ -28,15 +28,17 @@ function useRealtimeGame() {
             userIdO: string | null;
           };
 
-          // // Оновлення дошки для спостерігача
-          // if (side === "spectate") {
-          //   setBoard(board);
-          // }
+          // Оновлення дошки для спостерігача
 
-          // // Якщо є два гравця і заходить хтось інший, то він додається як спостерігач
-          // if (!side && userIdX && userIdO) {
-          //   setSide("spectate");
-          // }
+          if (side === "spectate") {
+            setBoard(board);
+          }
+
+          // Якщо є два гравця і заходить хтось інший, то він додається як спостерігач
+          if (!side && userIdX && userIdO) {
+            setSide("spectate");
+            setBoard(board);
+          }
 
           // Це оновлює вікно вибору сторони
           if ((userIdX && !userIdO) || (!userIdX && userIdO)) {

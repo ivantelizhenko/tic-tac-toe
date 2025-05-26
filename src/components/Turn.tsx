@@ -6,10 +6,12 @@ import X from "./X";
 function Turn() {
   const { turn } = useStore();
 
-  return <Wrapper $isO={turn === "O"}>{turn === "O" ? <O /> : <X />}</Wrapper>;
+  return <Wrapper $isO={turn === "O"}> {turn === "O" ? <O /> : <X />}</Wrapper>;
 }
 
 const Wrapper = styled.p<{ $isO: boolean }>`
+  display: flex;
+  font-size: 5rem;
   position: absolute;
   left: 0;
   top: -10%;

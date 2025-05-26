@@ -25,7 +25,7 @@ function GameOverWindow() {
     <ModalWindow isOpen={!!isGameOver.message}>
       <Wrapper>
         <Message>{isGameOver.message}</Message>
-        {side && (
+        {side && side !== "spectate" && (
           <GameOverButton onClick={handleReset} disabled={!side}>
             Reset
           </GameOverButton>

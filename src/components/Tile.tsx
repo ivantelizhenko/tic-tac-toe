@@ -22,6 +22,9 @@ const Wrapper = styled.button`
   cursor: default;
   background-color: var(--color-primary);
   padding: 12px;
+
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
 `;
 
 export default Tile;
