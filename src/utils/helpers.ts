@@ -1,7 +1,7 @@
-export function setIdToLocalStorage(id: string) {
+export function setUserIdToLocalStorage(id: string) {
   localStorage.setItem("tic-tac-toe/userId", id);
 }
-export function getIdFromLocalStorage() {
+export function getUserIdFromLocalStorage() {
   const id = localStorage.getItem("tic-tac-toe/userId");
 
   return id;

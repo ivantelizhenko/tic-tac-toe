@@ -91,10 +91,10 @@ function StoreProvider({ children }: { children: ReactNode }) {
     setTurn: useCallback((turn) => {
       dispatch({ type: "turn/set", payload: turn });
     }, []),
-    setUserId: useCallback((id: string) => {
+    setUserId: useCallback((id) => {
       dispatch({ type: "userId/set", payload: id });
     }, []),
-    setGameId: useCallback((id: string) => {
+    setGameId: useCallback((id) => {
       dispatch({ type: "gameId/set", payload: id });
     }, []),
   };

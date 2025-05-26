@@ -2,36 +2,69 @@ import styled from "styled-components";
 
 import useGetGame from "../hooks/useGetGame";
 import Spinner from "./Spinner";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useStore } from "../contexts/store";
 import Board from "./Board";
+import { getUserIdFromLocalStorage } from "../utils/helpers";
+import ChooseSide from "./ChooseSide";
+import type { SideType } from "../contexts/storeTypes";
 
 function GameEnviroment() {
   const navigate = useNavigate();
-  const { setGameId, setBoard, setTurn } = useStore();
-  const { gameId } = useParams();
-  const { data: game, isLoading } = useGetGame(gameId || null);
-  const [isOpenChooseWindow, setIsOpenChooseWindow] = useState(false);
+  const { side, setGameId, setBoard, setTurn, setUserId, setSide } = useStore();
+  const { gameId: gameIdFromLink } = useParams();
+  const { data: game, isLoading: isLoadingGame } = useGetGame(
+    gameIdFromLink || null
+  );
+  const isSecondTimeGetGame = useRef<boolean>(false);
+  const [isOpenChooseWindow, setIsOpenChooseWindow] = useState(true);
+  const [selectedSide, setSelectedSide] = useState<"X" | "O" | null>(null);
+
+  useEffect(() => {
+    if (selectedSide) {
+      setSide(selectedSide);
+    }
+  }, [selectedSide, setSide]);
 
   useEffect(() => {
     if (game) {
-      const board = JSON.parse(game.board);
-      setGameId(game.id);
-      setBoard(board);
-      setTurn(game.turn);
-    } else {
-      // Якщо немає гри за цим gameId з посилання, то перенаправляти на сторінку Menu
-      navigate("/menu");
+      setIsOpenChooseWindow(
+        !side && (!game.userIdO || !game.userIdX) && selectedSide === null
+      );
     }
-  }, [game, setGameId, setBoard, setTurn, navigate]);
+  }, [side, game, selectedSide]);
 
-  if (isLoading) return <Spinner />;
+  useEffect(() => {
+    if (!isSecondTimeGetGame.current) {
+      if (game) {
+        isSecondTimeGetGame.current = true;
+        const userIdFromLocalStorage = getUserIdFromLocalStorage();
+        const isXPlayer = userIdFromLocalStorage === game.userIdX && "X";
+        const isOPlayer = userIdFromLocalStorage === game.userIdO && "O";
+        const board = JSON.parse(game.board);
+
+        setGameId(game.id);
+        setBoard(board);
+        setTurn(game.turn);
+        if (isXPlayer || isOPlayer) {
+          setSide((isXPlayer || isOPlayer) as SideType);
+          setUserId(userIdFromLocalStorage!);
+        }
+      } else if (game === null) {
+        // Якщо немає гри за цим gameId з посилання, то перенаправляти на сторінку Menu
+        navigate("/menu");
+      }
+    }
+  }, [game, setGameId, setUserId, setBoard, setTurn, setSide, navigate]);
+
+  if (isLoadingGame) return <Spinner />;
 
   return (
     <Wrapper>
       <Board />
-      {/*<ChooseSide isOpen={isOpenChooseWindow} handleChoose={setSelectedSide} />*/
+      <ChooseSide isOpen={isOpenChooseWindow} handleChoose={setSelectedSide} />
+      {/* */
       /* <GameOverWindow /> */}
     </Wrapper>
   );
