@@ -23,3 +23,24 @@ export async function getGame(gameId: string) {
 
   return game;
 }
+
+export async function updateGame({
+  gameId,
+  updates,
+}: {
+  gameId: string | null;
+  updates: object;
+}) {
+  if (!gameId) return;
+
+  const { data: game, error } = await supabase
+    .from("games")
+    .update(updates)
+    .eq("id", gameId)
+    .select()
+    .single();
+
+  if (error) console.log(error);
+
+  return game;
+}

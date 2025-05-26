@@ -6,9 +6,13 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useStore } from "../contexts/store";
 import Board from "./Board";
-import { getUserIdFromLocalStorage } from "../utils/helpers";
+import {
+  getUserIdFromLocalStorage,
+  setUserIdToLocalStorage,
+} from "../utils/helpers";
 import ChooseSide from "./ChooseSide";
 import type { SideType } from "../contexts/storeTypes";
+import useAddPlayer from "../hooks/useAddPlayer";
 
 function GameEnviroment() {
   const navigate = useNavigate();
@@ -17,16 +21,25 @@ function GameEnviroment() {
   const { data: game, isLoading: isLoadingGame } = useGetGame(
     gameIdFromLink || null
   );
+  const { addPlayer } = useAddPlayer();
   const isSecondTimeGetGame = useRef<boolean>(false);
-  const [isOpenChooseWindow, setIsOpenChooseWindow] = useState(true);
+  const [isOpenChooseWindow, setIsOpenChooseWindow] = useState(false);
   const [selectedSide, setSelectedSide] = useState<"X" | "O" | null>(null);
 
+  // Можна обрати бік
   useEffect(() => {
     if (selectedSide) {
+      const userId = Math.random().toString();
+      setUserId(userId);
       setSide(selectedSide);
+      setUserIdToLocalStorage(userId);
+      const userIdForAPI =
+        selectedSide === "X" ? { userIdX: userId } : { userIdO: userId };
+      addPlayer(userIdForAPI);
     }
-  }, [selectedSide, setSide]);
+  }, [selectedSide, setSide, setUserId, addPlayer]);
 
+  // Якщо є умови для поясви вікна з обирання сторони, то тут вони встановляться і з'явиться вікно
   useEffect(() => {
     if (game) {
       setIsOpenChooseWindow(
@@ -35,6 +48,7 @@ function GameEnviroment() {
     }
   }, [side, game, selectedSide]);
 
+  // При першому заходу в гру або оновлені сторінки бере гру зі db і додає її в store
   useEffect(() => {
     if (!isSecondTimeGetGame.current) {
       if (game) {
@@ -47,6 +61,8 @@ function GameEnviroment() {
         setGameId(game.id);
         setBoard(board);
         setTurn(game.turn);
+
+        // Якщо ти вже гравець, то встановлює твою сторону
         if (isXPlayer || isOPlayer) {
           setSide((isXPlayer || isOPlayer) as SideType);
           setUserId(userIdFromLocalStorage!);
@@ -64,8 +80,7 @@ function GameEnviroment() {
     <Wrapper>
       <Board />
       <ChooseSide isOpen={isOpenChooseWindow} handleChoose={setSelectedSide} />
-      {/* */
-      /* <GameOverWindow /> */}
+      {/* <GameOverWindow /> */}
     </Wrapper>
   );
 }
