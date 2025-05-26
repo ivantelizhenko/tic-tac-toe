@@ -1,70 +1,61 @@
 import styled from "styled-components";
 import { useStore } from "../contexts/store";
-import Tile from "./Tile";
-import O from "./O";
-import X from "./X";
+import Tile, { type IconType } from "./Tile";
+import Turn from "./Turn";
+import useDoMove from "../hooks/useDoMove";
+import { positionsForWin } from "../utils/utils";
+import { useEffect } from "react";
 
 function Board() {
-  const { turn, board } = useStore();
+  const { turn, isGameOver, board, side, setTile, setTurn, setGameOver } =
+    useStore();
+  const { doMove } = useDoMove();
 
   // // Перевірка, чи не завершити гру
-  // useEffect(() => {
-  //   if (board) {
-  //     const boardNumber = board.map((tile) => tile.type);
-  //     const positionsForWins = possibleWin.map((set) =>
-  //       set.map((index) => boardNumber[index])
-  //     );
-  //     const isWin = positionsForWins.find((positionForWin) => {
-  //       const set = Array.from(new Set(positionForWin));
-  //       return !set.includes(null) && set.length === 1;
-  //     });
+  useEffect(() => {
+    if (board) {
+      const boardTypes = board.map((tile) => tile.type);
+      const boardPositions = positionsForWin.map((position) =>
+        position.map((tileIndex) => boardTypes[tileIndex])
+      );
 
-  //     const isDraw = !board.map((tile) => tile.type).includes(null);
+      const isWin = boardPositions.find((position) =>
+        position.every((tile) => tile !== null && tile === position[0])
+      );
 
-  //     if (isWin) {
-  //       const sideWin = isWin[0];
-  //       setGameOver(`${sideWin} win`);
-  //     } else if (isDraw) {
-  //       setGameOver("Draw");
-  //     }
-  //   }
-  // }, [board, setGameOver, updateBoard]);
+      const isDraw = !boardTypes.includes(null);
 
-  // // Зробити крок
-  // function handleDoMove({ type, id }: { type: IconType; id: string }) {
-  //   if (type || isGameOver.message || !side || side === "spectate") return;
+      if (isWin) {
+        const sideWin = isWin[0];
+        setGameOver(`${sideWin} win`);
+      } else if (isDraw) {
+        setGameOver("Draw");
+      }
+    }
+  }, [board, setGameOver]);
 
-  //   if (side === turn) {
-  //     const newTurn = turn === "X" ? "O" : "X";
-  //     setTile(id);
-  //     setTurn(newTurn);
-  //     updateBoard();
-  //   }
-  // }
+  // Зробити крок
+  function handleDoMove({ type, id }: { type: IconType; id: string }) {
+    // if (type || isGameOver.message || !side || side === "spectate") return;
+    if (type !== null || !side || isGameOver.message) return;
+
+    if (side === turn) {
+      const newTurn = turn === "X" ? "O" : "X";
+      setTile(id);
+      setTurn(newTurn);
+      doMove();
+    }
+  }
 
   return (
     <Wrapper>
       {board?.map(({ type, id }) => (
-        // <Tile key={id} icon={type} onClick={() => handleDoMove({ type, id })} />
-        <Tile key={id} icon={type} />
+        <Tile key={id} icon={type} onClick={() => handleDoMove({ type, id })} />
       ))}
-      {turn && <Turn $isO={turn === "O"}>{turn === "O" ? <O /> : <X />}</Turn>}
+      {turn && <Turn />}
     </Wrapper>
   );
 }
-
-const Turn = styled.p<{ $isO: boolean }>`
-  position: absolute;
-  left: 0;
-  top: -10%;
-  color: ${({ $isO }) => ($isO ? "var(--color-white)" : "var(--color-gray)")};
-  width: 40px;
-
-  @media (max-width: 750px) {
-    top: -20%;
-    width: 30px;
-  }
-`;
 
 const Wrapper = styled.div`
   height: 80%;

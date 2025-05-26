@@ -1,20 +1,21 @@
 import styled from "styled-components";
 import { useStore } from "../contexts/store";
 import { createBoard } from "../utils/utils";
-import useResetGame from "../hooks/useResetGame";
+
 import useGetGame from "../hooks/useGetGame";
 import ModalWindow from "./ModalWindow";
 import { Button } from "./Button";
+import useResetGame from "../hooks/useResetGame";
 
 function GameOverWindow() {
-  const { isGameOver, reset, setBoard, side } = useStore();
+  const { isGameOver, reset, setBoard, side, gameId } = useStore();
 
   const { resetGame } = useResetGame();
-  const { data: game } = useGetGame();
+  const { data: game } = useGetGame(gameId);
 
   function handleReset() {
     if (game && game.userIdX && game.userIdO) {
-      resetGame();
+      resetGame(gameId!);
     }
     setBoard(createBoard());
     reset();
@@ -24,7 +25,7 @@ function GameOverWindow() {
     <ModalWindow isOpen={!!isGameOver.message}>
       <Wrapper>
         <Message>{isGameOver.message}</Message>
-        {side && side !== "spectate" && (
+        {side && (
           <GameOverButton onClick={handleReset} disabled={!side}>
             Reset
           </GameOverButton>

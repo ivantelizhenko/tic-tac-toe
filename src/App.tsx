@@ -29,7 +29,9 @@ const Wrapper = styled.main`
 
   background-color: var(--color-primary);
   height: 100%;
-  display: grid;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   font-family: "Oswald", sans-serif;
 `;

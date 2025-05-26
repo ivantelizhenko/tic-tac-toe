@@ -13,6 +13,7 @@ import {
 import ChooseSide from "./ChooseSide";
 import type { SideType } from "../contexts/storeTypes";
 import useAddPlayer from "../hooks/useAddPlayer";
+import GameOverWindow from "./GameOverWindow";
 
 function GameEnviroment() {
   const navigate = useNavigate();
@@ -80,7 +81,7 @@ function GameEnviroment() {
     <Wrapper>
       <Board />
       <ChooseSide isOpen={isOpenChooseWindow} handleChoose={setSelectedSide} />
-      {/* <GameOverWindow /> */}
+      <GameOverWindow />
     </Wrapper>
   );
 }

@@ -12,6 +12,10 @@ export async function createGame(id: string) {
   return game;
 }
 
+export async function deleteGame(id: string) {
+  await supabase.from("games").delete().eq("id", id);
+}
+
 export async function getGame(gameId: string) {
   const { data: game, error } = await supabase
     .from("games")
@@ -41,6 +45,13 @@ export async function updateGame({
     .single();
 
   if (error) console.log(error);
+
+  return game;
+}
+
+export async function resetGame(id: string) {
+  await deleteGame(id);
+  const game = await createGame(id);
 
   return game;
 }

@@ -33,9 +33,7 @@ function Menu() {
   );
 }
 
-const Wrapper = styled.div`
-  place-self: center;
-`;
+const Wrapper = styled.div``;
 
 const MenuButton = styled(Button)`
   background-color: var(--color-surface);

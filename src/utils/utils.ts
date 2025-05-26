@@ -16,7 +16,7 @@ export function createBoard() {
   return board;
 }
 
-export const possibleWin = [
+export const positionsForWin = [
   [0, 1, 2],
   [2, 5, 8],
   [6, 7, 8],
