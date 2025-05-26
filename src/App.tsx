@@ -23,6 +23,7 @@ const Wrapper = styled.main`
   --color-primary-darker: #0ca192;
   --color-primary-lighter: #50d3c4;
   --color-surface: #e0f3f1;
+  --color-surface-hover: #cbe6e3;
   --color-white: #f2ecd2;
   --color-gray: #545453;
   --color-disabled: #ccc;

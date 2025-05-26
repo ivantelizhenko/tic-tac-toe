@@ -11,6 +11,7 @@ import type {
   StoreContextValue,
   StoreState,
 } from "./storeTypes";
+import { createBoard } from "../utils/utils";
 
 const StoreContext = createContext<StoreContextValue | null>(null);
 
@@ -57,6 +58,7 @@ function storeReducer(state: StoreState, action: Action): StoreState {
         isGameOver: { message: null },
         side: null,
         turn: "X",
+        board: createBoard(),
       };
     }
     case "turn/set": {

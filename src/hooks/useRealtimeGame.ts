@@ -51,7 +51,6 @@ function useRealtimeGame() {
           // Це оновлює гру, коли перестворилася нова
           if (isEmptyBoard && !updatedAt && !userIdX && !userIdO) {
             reset();
-            setBoard(board);
             queryClient.refetchQueries({ queryKey: ["game"] });
           }
 

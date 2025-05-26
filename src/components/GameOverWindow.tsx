@@ -1,35 +1,31 @@
 import styled from "styled-components";
 import { useStore } from "../contexts/store";
-import { createBoard } from "../utils/utils";
-
-import useGetGame from "../hooks/useGetGame";
 import ModalWindow from "./ModalWindow";
+import { useEffect, useState } from "react";
 import { Button } from "./Button";
-import useResetGame from "../hooks/useResetGame";
 
 function GameOverWindow() {
-  const { isGameOver, reset, setBoard, side, gameId } = useStore();
+  const [isCloseGameOverWindow, setIsCloseGameOverWindow] = useState<
+    "open" | "close"
+  >("close");
+  const { isGameOver } = useStore();
 
-  const { resetGame } = useResetGame();
-  const { data: game } = useGetGame(gameId);
-
-  function handleReset() {
-    if (game && game.userIdX && game.userIdO) {
-      resetGame(gameId!);
+  useEffect(() => {
+    if (isGameOver.message) {
+      setIsCloseGameOverWindow("open");
+      setTimeout(() => setIsCloseGameOverWindow("close"), 2000);
     }
-    setBoard(createBoard());
-    reset();
-  }
+  }, [isGameOver.message]);
 
   return (
-    <ModalWindow isOpen={!!isGameOver.message}>
+    <ModalWindow isOpen={isCloseGameOverWindow === "open"}>
       <Wrapper>
         <Message>{isGameOver.message}</Message>
-        {side && side !== "spectate" && (
-          <GameOverButton onClick={handleReset} disabled={!side}>
-            Reset
-          </GameOverButton>
-        )}
+        <ButtonCloseModalWindow
+          onClick={() => setIsCloseGameOverWindow("close")}
+        >
+          Close
+        </ButtonCloseModalWindow>
       </Wrapper>
     </ModalWindow>
   );
@@ -52,8 +48,9 @@ const Message = styled.p`
   letter-spacing: 2px;
 `;
 
-const GameOverButton = styled(Button)`
+const ButtonCloseModalWindow = styled(Button)`
   width: 100%;
+  padding: 6px 12px;
   background-color: var(--color-primary);
   color: var(--color-surface);
 

@@ -15,10 +15,12 @@ import type { SideType } from "../contexts/storeTypes";
 import useAddPlayer from "../hooks/useAddPlayer";
 import GameOverWindow from "./GameOverWindow";
 import useRealtimeGame from "../hooks/useRealtimeGame";
+import ResultButtons from "./ResultButtons";
 
 function GameEnviroment() {
   const navigate = useNavigate();
-  const { side, setGameId, setBoard, setTurn, setUserId, setSide } = useStore();
+  const { side, isGameOver, setGameId, setBoard, setTurn, setUserId, setSide } =
+    useStore();
   const { gameId: gameIdFromLink } = useParams();
   const { data: game, isLoading: isLoadingGame } = useGetGame(
     gameIdFromLink || null
@@ -87,6 +89,8 @@ function GameEnviroment() {
       <Board />
       <ChooseSide isOpen={isOpenChooseWindow} handleChoose={setSelectedSide} />
       <GameOverWindow />
+
+      {side && side !== "spectate" && isGameOver.message && <ResultButtons />}
     </Wrapper>
   );
 }
