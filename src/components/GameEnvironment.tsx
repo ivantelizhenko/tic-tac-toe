@@ -69,7 +69,7 @@ function GameEnviroment() {
         setTurn(game.turn);
 
         // Якщо ти вже гравець, то встановлює твою сторону
-        if (isXPlayer || isOPlayer) {
+        if (userIdFromLocalStorage && (isXPlayer || isOPlayer)) {
           setSide((isXPlayer || isOPlayer) as SideType);
           setUserId(userIdFromLocalStorage!);
         }
