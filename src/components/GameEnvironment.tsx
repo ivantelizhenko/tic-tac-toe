@@ -14,6 +14,7 @@ import ChooseSide from "./ChooseSide";
 import type { SideType } from "../contexts/storeTypes";
 import useAddPlayer from "../hooks/useAddPlayer";
 import GameOverWindow from "./GameOverWindow";
+import useRealtimeGame from "../hooks/useRealtimeGame";
 
 function GameEnviroment() {
   const navigate = useNavigate();
@@ -22,10 +23,13 @@ function GameEnviroment() {
   const { data: game, isLoading: isLoadingGame } = useGetGame(
     gameIdFromLink || null
   );
+
   const { addPlayer } = useAddPlayer();
   const isSecondTimeGetGame = useRef<boolean>(false);
   const [isOpenChooseWindow, setIsOpenChooseWindow] = useState(false);
   const [selectedSide, setSelectedSide] = useState<"X" | "O" | null>(null);
+
+  useRealtimeGame();
 
   // Можна обрати бік
   useEffect(() => {
@@ -37,6 +41,7 @@ function GameEnviroment() {
       const userIdForAPI =
         selectedSide === "X" ? { userIdX: userId } : { userIdO: userId };
       addPlayer(userIdForAPI);
+      setSelectedSide(null);
     }
   }, [selectedSide, setSide, setUserId, addPlayer]);
 

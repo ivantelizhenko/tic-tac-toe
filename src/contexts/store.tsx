@@ -52,7 +52,12 @@ function storeReducer(state: StoreState, action: Action): StoreState {
       return { ...state, isGameOver: { message: action.payload } };
     }
     case "game/reset": {
-      return { ...state, isGameOver: { message: null }, side: null };
+      return {
+        ...state,
+        isGameOver: { message: null },
+        side: null,
+        turn: "X",
+      };
     }
     case "turn/set": {
       return { ...state, turn: action.payload };

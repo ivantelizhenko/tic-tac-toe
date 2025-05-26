@@ -6,7 +6,6 @@ function useGetGame(gameId: string | null) {
     queryKey: ["game", gameId],
     queryFn: () => getGame(gameId!),
     enabled: !!gameId,
-    refetchInterval: 30 * 1000,
   });
 }
 

@@ -21,7 +21,7 @@ function Menu() {
   async function handleStart() {
     const id = Math.random().toString();
     setGameId(id);
-    createGame(id);
+    await createGame(id);
   }
 
   return (

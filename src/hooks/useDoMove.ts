@@ -1,4 +1,4 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { updateGame as updateGameAPI } from "../service/supabase";
 import { useStore } from "../contexts/store";
 
@@ -7,15 +7,20 @@ function useDoMove() {
   const boardForAPI = JSON.stringify(board);
   const now = new Date();
 
-  const { mutateAsync: doMove, isPending } = useMutation({
+  const queryClient = useQueryClient();
+
+  const { mutateAsync: doMove } = useMutation({
     mutationFn: () =>
       updateGameAPI({
         gameId,
         updates: { board: boardForAPI, updatedAt: now, turn },
       }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["game"] });
+    },
   });
 
-  return { doMove, isPending };
+  return { doMove };
 }
 
 export default useDoMove;

@@ -36,8 +36,8 @@ function Board() {
 
   // Зробити крок
   function handleDoMove({ type, id }: { type: IconType; id: string }) {
-    // if (type || isGameOver.message || !side || side === "spectate") return;
-    if (type !== null || !side || isGameOver.message) return;
+    if (type !== null || !side || isGameOver.message || side === "spectate")
+      return;
 
     if (side === turn) {
       const newTurn = turn === "X" ? "O" : "X";

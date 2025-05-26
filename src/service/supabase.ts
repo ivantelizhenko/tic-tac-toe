@@ -1,4 +1,5 @@
 import { supabase } from "../lib/supabase";
+import { createBoard } from "../utils/utils";
 // import { isMoreThanFiveMinutesApart } from "../utils/helpers";
 
 export async function createGame(id: string) {
@@ -50,8 +51,17 @@ export async function updateGame({
 }
 
 export async function resetGame(id: string) {
-  await deleteGame(id);
-  const game = await createGame(id);
+  const now = new Date();
+  const updates = {
+    userIdX: null,
+    userIdO: null,
+    board: JSON.stringify(createBoard()),
+    turn: "X",
+    updatedAt: null,
+    createdAt: now,
+  };
+
+  const game = await updateGame({ gameId: id, updates });
 
   return game;
 }
