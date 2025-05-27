@@ -15,17 +15,7 @@ createRoot(document.getElementById("root")!).render(
         <SupabaseProvider>
           <App />
           <GlobalStyles />
-          <Toaster
-            containerStyle={{
-              zIndex: 999999999, // щось супер-високе
-              position: "fixed", // обов'язково
-            }}
-            toastOptions={{
-              style: {
-                zIndex: 999999999,
-              },
-            }}
-          />
+          <Toaster />
         </SupabaseProvider>
       </ReactQueryProvider>
     </StoreProvider>

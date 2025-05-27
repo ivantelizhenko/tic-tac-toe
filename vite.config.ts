@@ -17,9 +17,4 @@ export default defineConfig({
       },
     }),
   ],
-
-  // FIXME: прибрати server
-  server: {
-    allowedHosts: true,
-  },
 });
