@@ -43,7 +43,7 @@ function LinkWindow() {
     <ModalWindow isOpen={isCloseLinkWindow === "open"}>
       <Wrapper>
         <LinkMessage>
-          Room link: <span>{fullUrl}</span>
+          <span> Room link:</span> {fullUrl}
         </LinkMessage>
         <ButtonsWrapper>
           <LinkWindowButton onClick={handleCopyLink}>
@@ -59,14 +59,12 @@ function LinkWindow() {
 }
 
 const LinkMessage = styled(Message)`
-  white-space: nowrap;
-  font-size: 1.25rem;
+  font-weight: 400;
+  font-size: 1rem;
+  letter-spacing: 0px;
 
   span {
-    font-weight: 400;
-    font-size: 1rem;
-
-    letter-spacing: 0px;
+    font-size: 1.25rem;
   }
 `;
 
@@ -84,6 +82,11 @@ const Wrapper = styled.div`
 const ButtonsWrapper = styled.div`
   display: flex;
   gap: 20px;
+
+  @media (max-width: 1150px) {
+    flex-direction: column;
+    gap: 10px;
+  }
 `;
 
 const LinkWindowButton = styled(Button)`
