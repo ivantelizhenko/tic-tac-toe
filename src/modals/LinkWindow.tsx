@@ -21,7 +21,6 @@ function LinkWindow() {
   const oneTimeOnly = useRef(true);
 
   useEffect(() => {
-    if (game && (game.userIdX || game.userIdO)) oneTimeOnly.current = false;
     if (oneTimeOnly.current) {
       if (
         game &&
@@ -32,6 +31,7 @@ function LinkWindow() {
         oneTimeOnly.current = false;
       }
     }
+    if (game && (game.userIdX || game.userIdO)) oneTimeOnly.current = false;
   }, [game, side, isLoading]);
 
   function handleCopyLink() {
