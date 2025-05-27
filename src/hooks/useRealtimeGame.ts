@@ -8,6 +8,7 @@ import { useStore } from "../contexts/store";
 import type { SideType, TileType } from "../contexts/storeTypes";
 
 import { setUserIdToLocalStorage } from "../utils/helpers";
+import toast from "react-hot-toast";
 
 function useRealtimeGame() {
   const { setBoard, setTurn, setSide, side, resetGame, gameId, reset } =
@@ -64,6 +65,7 @@ function useRealtimeGame() {
           // при натисканні на кпонку back to menu
           if (!id) {
             navigate("/menu");
+            toast("The game have been deleted", { duration: 2000 });
             reset();
             setUserIdToLocalStorage("");
           }

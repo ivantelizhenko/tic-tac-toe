@@ -22,6 +22,7 @@ import { Button } from "../components/Button";
 import ChooseSide from "../modals/ChooseSideWindow";
 import GameOverWindow from "../modals/GameOverWindow";
 import LinkWindow from "../modals/LinkWindow";
+import toast from "react-hot-toast";
 
 function GameEnviroment() {
   const navigate = useNavigate();
@@ -39,6 +40,7 @@ function GameEnviroment() {
     setUserId,
     setSide,
     resetGame,
+    reset,
   } = useStore();
   const { data: game, isLoading: isLoadingGame } = useGetGame(
     gameIdFromLink || null
@@ -106,7 +108,14 @@ function GameEnviroment() {
 
   function handleBackMenu() {
     if (game.id) {
-      deleteGame(game.id);
+      navigate("/menu");
+      toast("The game have been deleted", { duration: 2000 });
+
+      setTimeout(() => {
+        deleteGame(game.id);
+        reset();
+        setUserIdToLocalStorage("");
+      }, 500);
     }
   }
 

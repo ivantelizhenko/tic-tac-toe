@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 
 function X() {
   return (
@@ -10,16 +10,28 @@ function X() {
       strokeLinejoin="round"
       className="lucide lucide-x-icon lucide-x"
     >
-      <path d="M2 2 L30 30" />
-      <path d="M30 2 L2 30" />
+      <AnimatedPath d="M2 2 L30 30" />
+      <AnimatedPath d="M30 2 L2 30" />
     </Svg>
   );
 }
+
+const draw = keyframes`
+  to {
+    stroke-dashoffset: 0;
+  }
+`;
 
 const Svg = styled.svg`
   width: 100%;
   height: 100%;
   stroke: var(--color-gray);
+`;
+
+const AnimatedPath = styled.path`
+  stroke-dasharray: 40;
+  stroke-dashoffset: 40;
+  animation: ${draw} 0.6s ease forwards;
 `;
 
 export default X;

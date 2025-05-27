@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { useNavigate } from "react-router-dom";
 
 import useCreateGame from "../hooks/useCreateGame";
@@ -26,6 +26,13 @@ function Menu() {
   );
 }
 
+const showIn = keyframes`
+    to {
+      opacity: 1;
+    }
+
+`;
+
 const MenuButton = styled(Button)`
   background-color: var(--color-surface);
   color: var(--color-primary-darker);
@@ -33,6 +40,8 @@ const MenuButton = styled(Button)`
   padding-right: 128px;
 
   width: 100%;
+  opacity: 0;
+  animation: ${showIn} 1s both;
 
   &:hover {
     text-decoration: underline;

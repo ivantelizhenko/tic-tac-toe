@@ -7,7 +7,6 @@ import useDoMove from "../hooks/useDoMove";
 import { positionsForWin } from "../utils/utils";
 
 import Tile, { type IconType } from "./Tile";
-import Turn from "./Turn";
 
 function Board() {
   const { turn, isGameOver, board, side, setTile, setTurn, setGameOver } =
@@ -55,7 +54,6 @@ function Board() {
       {board?.map(({ type, id }) => (
         <Tile key={id} icon={type} onClick={() => handleDoMove({ type, id })} />
       ))}
-      {turn && <Turn />}
     </Wrapper>
   );
 }
