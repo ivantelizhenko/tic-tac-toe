@@ -24,7 +24,7 @@ function ModalWindow({
 
 const Wrapper = styled.dialog`
   width: 50%;
-  z-index: 9999;
+  z-index: 5000;
   position: absolute;
   inset: 50%;
   transform: translate(-50%, -50%);

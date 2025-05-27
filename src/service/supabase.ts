@@ -13,13 +13,11 @@ export async function deleteGame(id: string) {
 }
 
 export async function getGame(gameId: string) {
-  const { data: game, error } = await supabase
+  const { data: game } = await supabase
     .from("games")
     .select("*")
     .eq("id", gameId)
     .single();
-
-  if (error) console.log(error);
 
   return game;
 }

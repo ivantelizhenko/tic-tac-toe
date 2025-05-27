@@ -19,8 +19,9 @@ import {
 import Spinner from "../components/Spinner";
 import Board from "../components/Board";
 import { Button } from "../components/Button";
-import ChooseSide from "../modals/ChooseSide";
+import ChooseSide from "../modals/ChooseSideWindow";
 import GameOverWindow from "../modals/GameOverWindow";
+import LinkWindow from "../modals/LinkWindow";
 
 function GameEnviroment() {
   const navigate = useNavigate();
@@ -29,8 +30,16 @@ function GameEnviroment() {
   const [isOpenChooseWindow, setIsOpenChooseWindow] = useState(false);
   const [selectedSide, setSelectedSide] = useState<"X" | "O" | null>(null);
 
-  const { side, isGameOver, setGameId, setBoard, setTurn, setUserId, setSide } =
-    useStore();
+  const {
+    side,
+    isGameOver,
+    setGameId,
+    setBoard,
+    setTurn,
+    setUserId,
+    setSide,
+    resetGame,
+  } = useStore();
   const { data: game, isLoading: isLoadingGame } = useGetGame(
     gameIdFromLink || null
   );
@@ -111,11 +120,19 @@ function GameEnviroment() {
       {side && side !== "spectate" && isGameOver.message && (
         <ResetButton onClick={handleReset}>Reset</ResetButton>
       )}
-      {side && side !== "spectate" && (
-        <BackToMenuButton onClick={handleBackMenu}>
-          Back to menu
-        </BackToMenuButton>
-      )}
+      <LinkWindow />
+      <BackToMenuButton
+        onClick={
+          side && side !== "spectate"
+            ? handleBackMenu
+            : () => {
+                navigate("/menu");
+                resetGame();
+              }
+        }
+      >
+        Back to menu
+      </BackToMenuButton>
     </Wrapper>
   );
 }

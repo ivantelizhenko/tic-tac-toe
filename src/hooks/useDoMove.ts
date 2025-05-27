@@ -5,7 +5,6 @@ import { useStore } from "../contexts/store";
 function useDoMove() {
   const { gameId, board, turn } = useStore();
   const boardForAPI = JSON.stringify(board);
-  const now = new Date();
 
   const queryClient = useQueryClient();
 
@@ -13,7 +12,7 @@ function useDoMove() {
     mutationFn: () =>
       updateGameAPI({
         gameId,
-        updates: { board: boardForAPI, updatedAt: now, turn },
+        updates: { board: boardForAPI, turn },
       }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["game"] });

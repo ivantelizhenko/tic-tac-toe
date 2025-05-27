@@ -6,7 +6,7 @@ import ModalWindow from "../components/ModalWindow";
 import X from "../components/X";
 import O from "../components/O";
 
-function ChooseSide({
+function ChooseSideWindow({
   handleChoose,
   isOpen,
 }: {
@@ -66,4 +66,4 @@ const Block = styled.button`
   }
 `;
 
-export default ChooseSide;
+export default ChooseSideWindow;

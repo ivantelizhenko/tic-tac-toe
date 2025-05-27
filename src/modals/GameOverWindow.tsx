@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useStore } from "../contexts/store";
+
 import ModalWindow from "../components/ModalWindow";
 import { Button } from "../components/Button";
+import { Message } from "../components/Message";
 
 function GameOverWindow() {
   const [isCloseGameOverWindow, setIsCloseGameOverWindow] = useState<
@@ -13,6 +15,7 @@ function GameOverWindow() {
   useEffect(() => {
     if (isGameOver.message) {
       setIsCloseGameOverWindow("open");
+      setTimeout(() => setIsCloseGameOverWindow("close"), 2000);
     }
   }, [isGameOver.message]);
 
@@ -41,14 +44,16 @@ const Wrapper = styled.div`
   text-transform: uppercase;
 `;
 
-const Message = styled.p`
-  font-size: 3rem;
-  font-weight: 700;
-  letter-spacing: 2px;
-`;
-
 const ButtonCloseModalWindow = styled(Button)`
   width: 100%;
+
+  background-color: var(--color-primary);
+  color: var(--color-surface);
+
+  &:hover {
+    background-color: var(--color-primary-hover);
+    transition: background-color 0.2s;
+  }
 `;
 
 export default GameOverWindow;
