@@ -63,8 +63,15 @@ const LinkMessage = styled(Message)`
   font-size: 1rem;
   letter-spacing: 0px;
 
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
   span {
     font-size: 1.25rem;
+    margin-right: 0.5rem;
   }
 `;
 
