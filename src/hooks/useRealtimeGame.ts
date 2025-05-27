@@ -75,7 +75,17 @@ function useRealtimeGame() {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [gameId, queryClient, reset, setBoard, setTurn, side, setSide, navigate]);
+  }, [
+    gameId,
+    queryClient,
+    reset,
+    setBoard,
+    setTurn,
+    side,
+    setSide,
+    navigate,
+    resetGame,
+  ]);
 }
 
 export default useRealtimeGame;

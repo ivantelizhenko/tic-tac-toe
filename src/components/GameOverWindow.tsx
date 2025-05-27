@@ -13,7 +13,6 @@ function GameOverWindow() {
   useEffect(() => {
     if (isGameOver.message) {
       setIsCloseGameOverWindow("open");
-      setTimeout(() => setIsCloseGameOverWindow("close"), 2000);
     }
   }, [isGameOver.message]);
 

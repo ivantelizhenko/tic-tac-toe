@@ -98,9 +98,9 @@ function StoreProvider({ children }: { children: ReactNode }) {
     setGameOver: useCallback((message) => {
       dispatch({ type: "gameOver/set", payload: message });
     }, []),
-    resetGame: () => {
+    resetGame: useCallback(() => {
       dispatch({ type: "game/reset" });
-    },
+    }, []),
     reset: () => {
       dispatch({ type: "reset" });
     },
