@@ -4,27 +4,29 @@ import { Button as DefaultButton } from "./Button";
 import useGetGame from "../hooks/useGetGame";
 import useResetGame from "../hooks/useResetGame";
 import { useStore } from "../contexts/store";
+import useDeleteGame from "../hooks/useDeleteGame";
 
 function ResultButtons() {
   const [buttonsIsDisabled, setButtonIsDisabled] = useState(true);
-  const { reset, gameId } = useStore();
-
-  const { resetGame } = useResetGame();
+  const { gameId } = useStore();
+  const { resetGame: resetGameDB } = useResetGame();
+  const { deleteGame } = useDeleteGame();
   const { data: game } = useGetGame(gameId);
 
   useEffect(() => {
-    setTimeout(() => setButtonIsDisabled(false), 5000);
+    setTimeout(() => setButtonIsDisabled(false), 4000);
   }, []);
 
   function handleReset() {
     if (game && game.userIdX && game.userIdO) {
-      resetGame(gameId!);
+      resetGameDB(gameId!);
     }
-    reset();
   }
 
   function handleBackMenu() {
-    console.log("Back to menu");
+    if (game.id) {
+      deleteGame(game.id);
+    }
   }
 
   return (

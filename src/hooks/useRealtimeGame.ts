@@ -3,10 +3,14 @@ import { supabase } from "../lib/supabase";
 import { useStore } from "../contexts/store";
 import type { SideType, TileType } from "../contexts/storeTypes";
 import { useQueryClient } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
+import { setUserIdToLocalStorage } from "../utils/helpers";
 
 function useRealtimeGame() {
-  const { setBoard, setTurn, setSide, side, reset, gameId } = useStore();
+  const { setBoard, setTurn, setSide, side, resetGame, gameId, reset } =
+    useStore();
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const channel = supabase
@@ -20,16 +24,23 @@ function useRealtimeGame() {
           filter: `id=eq.${gameId}`,
         },
         (payload) => {
-          const { board, turn, updatedAt, userIdX, userIdO } = payload.new as {
-            board: TileType[];
-            turn: SideType;
-            updatedAt: string | null;
-            userIdX: string | null;
-            userIdO: string | null;
-          };
+          const { board, turn, updatedAt, userIdX, userIdO, id } =
+            payload.new as {
+              id: string;
+              board: TileType[];
+              turn: SideType;
+              updatedAt: string | null;
+              userIdX: string | null;
+              userIdO: string | null;
+            };
+
+          if (!id) {
+            reset();
+            navigate("/menu");
+            setUserIdToLocalStorage("");
+          }
 
           // Оновлення дошки для спостерігача
-
           if (side === "spectate") {
             setBoard(board);
           }
@@ -45,12 +56,11 @@ function useRealtimeGame() {
             queryClient.refetchQueries({ queryKey: ["game"] });
           }
 
+          // Це оновлює гру, коли перестворилася нова
           const isEmptyBoard =
             board && board.every((tile) => tile.type === null);
-
-          // Це оновлює гру, коли перестворилася нова
           if (isEmptyBoard && !updatedAt && !userIdX && !userIdO) {
-            reset();
+            resetGame();
             queryClient.refetchQueries({ queryKey: ["game"] });
           }
 
@@ -65,7 +75,7 @@ function useRealtimeGame() {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [gameId, queryClient, reset, setBoard, setTurn, side, setSide]);
+  }, [gameId, queryClient, reset, setBoard, setTurn, side, setSide, navigate]);
 }
 
 export default useRealtimeGame;

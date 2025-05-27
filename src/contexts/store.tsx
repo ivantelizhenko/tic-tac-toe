@@ -61,6 +61,12 @@ function storeReducer(state: StoreState, action: Action): StoreState {
         board: createBoard(),
       };
     }
+    case "reset": {
+      return {
+        ...state,
+        ...initialState,
+      };
+    }
     case "turn/set": {
       return { ...state, turn: action.payload };
     }
@@ -92,8 +98,11 @@ function StoreProvider({ children }: { children: ReactNode }) {
     setGameOver: useCallback((message) => {
       dispatch({ type: "gameOver/set", payload: message });
     }, []),
-    reset: () => {
+    resetGame: () => {
       dispatch({ type: "game/reset" });
+    },
+    reset: () => {
+      dispatch({ type: "reset" });
     },
     setTurn: useCallback((turn) => {
       dispatch({ type: "turn/set", payload: turn });

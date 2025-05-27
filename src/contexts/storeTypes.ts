@@ -17,6 +17,7 @@ export type StoreContextValue = StoreState & {
   setTile: (id: string) => void;
   setGameOver: (message: string) => void;
   reset: () => void;
+  resetGame: () => void;
   setTurn: (turn: SideType) => void;
   setUserId: (userId: string) => void;
   setGameId: (gameId: string) => void;
@@ -42,6 +43,9 @@ type SetGameOverType = {
 type GameResetType = {
   type: "game/reset";
 };
+type ResetType = {
+  type: "reset";
+};
 type SetTurnType = {
   type: "turn/set";
   payload: SideType;
@@ -61,6 +65,7 @@ export type Action =
   | SetTileType
   | SetGameOverType
   | GameResetType
+  | ResetType
   | SetTurnType
   | SetUserIdType
   | SetGameIdType;
