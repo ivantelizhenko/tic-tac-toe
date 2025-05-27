@@ -31,7 +31,6 @@ function LinkWindow() {
         oneTimeOnly.current = false;
       }
     }
-    if (game && (game.userIdX || game.userIdO)) oneTimeOnly.current = false;
   }, [game, side, isLoading]);
 
   function handleCopyLink() {
