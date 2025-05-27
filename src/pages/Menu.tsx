@@ -1,39 +1,30 @@
 import styled from "styled-components";
-import { Button } from "./Button";
 import { useNavigate } from "react-router-dom";
+
 import useCreateGame from "../hooks/useCreateGame";
-import useGetGame from "../hooks/useGetGame";
+
 import { useStore } from "../contexts/store";
-import { useEffect } from "react";
+
+import { Button } from "../components/Button";
 
 function Menu() {
-  const { gameId, setGameId } = useStore();
+  const { setGameId } = useStore();
   const navigate = useNavigate();
-  const { createGame, isPending } = useCreateGame();
-  const { data: game } = useGetGame(gameId);
-
-  useEffect(() => {
-    if (game?.id) {
-      navigate(`/game/${game.id}`);
-    }
-  }, [game, navigate]);
+  const { createGame } = useCreateGame();
 
   async function handleStart() {
     const id = Math.random().toString();
     setGameId(id);
     await createGame(id);
+    navigate(`/game/${id}`);
   }
 
   return (
-    <Wrapper>
-      <MenuButton onClick={handleStart} disabled={isPending}>
-        Start
-      </MenuButton>
-    </Wrapper>
+    <div>
+      <MenuButton onClick={handleStart}>Start</MenuButton>
+    </div>
   );
 }
-
-const Wrapper = styled.div``;
 
 const MenuButton = styled(Button)`
   background-color: var(--color-surface);

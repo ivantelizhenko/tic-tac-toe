@@ -1,8 +1,8 @@
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useStore } from "../contexts/store";
-import ModalWindow from "./ModalWindow";
-import { useEffect, useState } from "react";
-import { Button } from "./Button";
+import ModalWindow from "../components/ModalWindow";
+import { Button } from "../components/Button";
 
 function GameOverWindow() {
   const [isCloseGameOverWindow, setIsCloseGameOverWindow] = useState<
@@ -49,13 +49,6 @@ const Message = styled.p`
 
 const ButtonCloseModalWindow = styled(Button)`
   width: 100%;
-  padding: 6px 12px;
-  background-color: var(--color-primary);
-  color: var(--color-surface);
-
-  &:hover {
-    background-color: var(--color-primary-hover);
-  }
 `;
 
 export default GameOverWindow;

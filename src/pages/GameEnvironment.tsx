@@ -1,38 +1,42 @@
+import { useEffect, useRef, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 
 import useGetGame from "../hooks/useGetGame";
-import Spinner from "./Spinner";
-import { useEffect, useRef, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import useAddPlayer from "../hooks/useAddPlayer";
+import useRealtimeGame from "../hooks/useRealtimeGame";
+import useResetGame from "../hooks/useResetGame";
+import useDeleteGame from "../hooks/useDeleteGame";
+
 import { useStore } from "../contexts/store";
-import Board from "./Board";
+import type { SideType } from "../contexts/storeTypes";
+
 import {
   getUserIdFromLocalStorage,
   setUserIdToLocalStorage,
 } from "../utils/helpers";
-import ChooseSide from "./ChooseSide";
-import type { SideType } from "../contexts/storeTypes";
-import useAddPlayer from "../hooks/useAddPlayer";
-import GameOverWindow from "./GameOverWindow";
-import useRealtimeGame from "../hooks/useRealtimeGame";
-import { Button } from "./Button";
-import useResetGame from "../hooks/useResetGame";
-import useDeleteGame from "../hooks/useDeleteGame";
+
+import Spinner from "../components/Spinner";
+import Board from "../components/Board";
+import { Button } from "../components/Button";
+import ChooseSide from "../modals/ChooseSide";
+import GameOverWindow from "../modals/GameOverWindow";
 
 function GameEnviroment() {
   const navigate = useNavigate();
+  const { gameId: gameIdFromLink } = useParams();
+  const isSecondTimeGetGame = useRef<boolean>(false);
+  const [isOpenChooseWindow, setIsOpenChooseWindow] = useState(false);
+  const [selectedSide, setSelectedSide] = useState<"X" | "O" | null>(null);
+
   const { side, isGameOver, setGameId, setBoard, setTurn, setUserId, setSide } =
     useStore();
-  const { gameId: gameIdFromLink } = useParams();
   const { data: game, isLoading: isLoadingGame } = useGetGame(
     gameIdFromLink || null
   );
   const { resetGame: resetGameDB } = useResetGame();
   const { deleteGame } = useDeleteGame();
   const { addPlayer } = useAddPlayer();
-  const isSecondTimeGetGame = useRef<boolean>(false);
-  const [isOpenChooseWindow, setIsOpenChooseWindow] = useState(false);
-  const [selectedSide, setSelectedSide] = useState<"X" | "O" | null>(null);
 
   useRealtimeGame();
 
@@ -104,11 +108,14 @@ function GameEnviroment() {
       <Board />
       <ChooseSide isOpen={isOpenChooseWindow} handleChoose={setSelectedSide} />
       <GameOverWindow />
-
       {side && side !== "spectate" && isGameOver.message && (
         <ResetButton onClick={handleReset}>Reset</ResetButton>
       )}
-      <BackToMenuButton onClick={handleBackMenu}>Back to menu</BackToMenuButton>
+      {side && side !== "spectate" && (
+        <BackToMenuButton onClick={handleBackMenu}>
+          Back to menu
+        </BackToMenuButton>
+      )}
     </Wrapper>
   );
 }

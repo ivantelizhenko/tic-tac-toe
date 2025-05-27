@@ -3,12 +3,7 @@ import { createBoard } from "../utils/utils";
 // import { isMoreThanFiveMinutesApart } from "../utils/helpers";
 
 export async function createGame(id: string) {
-  const now = new Date();
-
-  const { data: game } = await supabase
-    .from("games")
-    .insert([{ id, createdAt: now }])
-    .select();
+  const { data: game } = await supabase.from("games").insert([{ id }]).select();
 
   return game;
 }
@@ -51,14 +46,11 @@ export async function updateGame({
 }
 
 export async function resetGame(id: string) {
-  const now = new Date();
   const updates = {
     userIdX: null,
     userIdO: null,
     board: JSON.stringify(createBoard()),
     turn: "X",
-    updatedAt: null,
-    createdAt: now,
   };
 
   const game = await updateGame({ gameId: id, updates });

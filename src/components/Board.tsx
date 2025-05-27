@@ -1,10 +1,13 @@
+import { useEffect } from "react";
 import styled from "styled-components";
+
 import { useStore } from "../contexts/store";
+import useDoMove from "../hooks/useDoMove";
+
+import { positionsForWin } from "../utils/utils";
+
 import Tile, { type IconType } from "./Tile";
 import Turn from "./Turn";
-import useDoMove from "../hooks/useDoMove";
-import { positionsForWin } from "../utils/utils";
-import { useEffect } from "react";
 
 function Board() {
   const { turn, isGameOver, board, side, setTile, setTurn, setGameOver } =

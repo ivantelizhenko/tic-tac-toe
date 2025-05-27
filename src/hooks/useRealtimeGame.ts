@@ -1,9 +1,12 @@
 import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
+
 import { supabase } from "../lib/supabase";
+
 import { useStore } from "../contexts/store";
 import type { SideType, TileType } from "../contexts/storeTypes";
-import { useQueryClient } from "@tanstack/react-query";
-import { useNavigate } from "react-router-dom";
+
 import { setUserIdToLocalStorage } from "../utils/helpers";
 
 function useRealtimeGame() {
@@ -34,12 +37,6 @@ function useRealtimeGame() {
               userIdO: string | null;
             };
 
-          if (!id) {
-            reset();
-            navigate("/menu");
-            setUserIdToLocalStorage("");
-          }
-
           // Оновлення дошки для спостерігача
           if (side === "spectate") {
             setBoard(board);
@@ -56,12 +53,19 @@ function useRealtimeGame() {
             queryClient.refetchQueries({ queryKey: ["game"] });
           }
 
-          // Це оновлює гру, коли перестворилася нова
+          // при натисканні на кпонку reset
           const isEmptyBoard =
             board && board.every((tile) => tile.type === null);
           if (isEmptyBoard && !updatedAt && !userIdX && !userIdO) {
-            resetGame();
             queryClient.refetchQueries({ queryKey: ["game"] });
+            resetGame();
+          }
+
+          // при натисканні на кпонку back to menu
+          if (!id) {
+            navigate("/menu");
+            reset();
+            setUserIdToLocalStorage("");
           }
 
           if (side === turn) {

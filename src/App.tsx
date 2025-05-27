@@ -1,17 +1,22 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import styled from "styled-components";
-import GameEnviroment from "./components/GameEnvironment";
-import Menu from "./components/Menu";
+import { Suspense, lazy } from "react";
+import Spinner from "./components/Spinner";
+
+const Menu = lazy(() => import("./pages/Menu"));
+const GameEnvironment = lazy(() => import("./pages/GameEnvironment"));
 
 function App() {
   return (
     <Wrapper>
       <BrowserRouter>
-        <Routes>
-          <Route path="/menu" element={<Menu />} />
-          <Route path="/game/:gameId" element={<GameEnviroment />} />
-          <Route path="*" element={<Navigate replace to="/menu" />} />
-        </Routes>
+        <Suspense fallback={<Spinner />}>
+          <Routes>
+            <Route path="/menu" element={<Menu />} />
+            <Route path="/game/:gameId" element={<GameEnvironment />} />
+            <Route path="*" element={<Navigate replace to="/menu" />} />
+          </Routes>
+        </Suspense>
       </BrowserRouter>
     </Wrapper>
   );

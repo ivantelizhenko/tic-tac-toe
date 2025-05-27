@@ -1,10 +1,10 @@
 import styled from "styled-components";
-import X from "./X";
-import O from "./O";
 
-import ModalWindow from "./ModalWindow";
-import useGetGame from "../hooks/useGetGame";
 import { useStore } from "../contexts/store";
+import useGetGame from "../hooks/useGetGame";
+import ModalWindow from "../components/ModalWindow";
+import X from "../components/X";
+import O from "../components/O";
 
 function ChooseSide({
   handleChoose,
